@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Golden Community Garden: 2026 Participation Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F1E6; --card:#FFFDF8; --ink:#1F2A1C; --muted:#5E6857; --line:#E3DCCB;
+  --moss:#3D5A36; --moss-2:#567A4C; --sage:#DCE6CF; --sage-ink:#2F4A2A;
+  --clay:#B85C36; --clay-bg:#F6E3D8; --gold:#C98A1B; --gold-bg:#F7EBCF; --sky-bg:#E4ECF2; --sky:#3E6378;
+  --r:16px; --shadow:0 1px 0 rgba(31,42,28,.04),0 6px 18px -10px rgba(31,42,28,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 "Work Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--moss)}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:44px 0 34px;border-bottom:1px solid var(--line);
+  background:radial-gradient(1200px 400px at 85% -10%,#E8EEDB 0,transparent 60%),var(--paper)}
+.eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--moss-2)}
+.hero h1{font-size:clamp(32px,5.4vw,56px);line-height:1.04;margin:14px 0 14px;max-width:16ch}
+.hero h1 em{font-style:italic;color:var(--moss)}
+.hero p.lede{font-size:18px;max-width:58ch;color:#38432F;margin:0}
+.hero svg.sprig{position:absolute;right:2%;top:30px;width:340px;opacity:.95;pointer-events:none}
+@media (max-width:980px){.hero svg.sprig{display:none}}
+.how{position:relative;z-index:1}
+.pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:14px;color:var(--muted)}
+.pill b{color:var(--ink);font-weight:600}
+
+/* how it works */
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:26px 0 8px}
+.how div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+.how .n{font-family:Fraunces,serif;font-size:22px;color:var(--clay);font-weight:700}
+.how h3{font-size:18px;margin:2px 0 4px}
+.how p{margin:0;color:var(--muted);font-size:15px}
+
+/* toolbar */
+.bar{position:sticky;top:0;z-index:5;background:rgba(246,241,230,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin-top:22px}
+.bar .wrap{display:flex;gap:10px;align-items:center;padding-top:12px;padding-bottom:12px;flex-wrap:wrap}
+.search{flex:1 1 260px;display:flex;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:0 12px;min-height:46px}
+.search:focus-within{border-color:var(--moss-2)}
+.search input{border:0;outline:0;background:transparent;font:inherit;flex:1;min-width:0;padding:10px 0}
+.seg{display:flex;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:3px}
+.seg button{border:0;background:transparent;padding:8px 12px;border-radius:9px;font-size:14px;font-weight:500;color:var(--muted);min-height:38px}
+.seg button[aria-pressed=true]{background:var(--moss);color:#fff}
+
+/* grid */
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin:16px 0 4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;padding:12px 0 40px}
+.card{position:relative;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:#CFC6B1}
+.card:focus-visible{outline:3px solid var(--moss-2);outline-offset:2px}
+.card .top{display:flex;align-items:flex-start;gap:12px}
+.plotno{flex:none;min-width:52px;height:52px;padding:0 8px;border-radius:14px;background:var(--sage);color:var(--sage-ink);display:grid;place-items:center;font-family:Fraunces,serif;font-weight:700;font-size:18px;line-height:1;text-align:center}
+.plotno.long{font-size:14px}
+.who{font-weight:600;line-height:1.3}
+.since{font-size:13px;color:var(--muted)}
+.leaves{display:flex;flex-wrap:wrap;gap:4px;min-height:14px}
+.leaf{width:12px;height:12px;border-radius:12px 0 12px 0;background:var(--moss-2)}
+.leaf.social{background:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;line-height:1.2;padding:5px 9px;border-radius:999px;background:#F1ECDF;color:#4A5341}
+.chip.green{background:var(--sage);color:var(--sage-ink)}
+.chip.gold{background:var(--gold-bg);color:#7A5310}
+.chip.clay{background:var(--clay-bg);color:#843E20}
+.chip.sky{background:var(--sky-bg);color:var(--sky)}
+.soft{color:var(--muted);font-size:14px}
+.card .cta{margin-top:auto;font-size:14px;font-weight:600;color:var(--moss)}
+.empty{grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(24,30,20,.42);opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:21;left:50%;top:50%;width:min(640px,calc(100vw - 24px));max-height:calc(100vh - 40px);overflow:auto;transform:translate(-50%,-46%);opacity:0;pointer-events:none;transition:.22s;background:var(--card);border-radius:22px;box-shadow:0 30px 80px -20px rgba(0,0,0,.4)}
+.sheet.on{opacity:1;transform:translate(-50%,-50%);pointer-events:auto}
+@media (max-width:640px){
+  .sheet{left:0;right:0;top:auto;bottom:0;width:100%;max-height:92vh;border-radius:22px 22px 0 0;transform:translateY(30px)}
+  .sheet.on{transform:none}
+  .how{grid-template-columns:1fr}
+}
+.sh-head{position:sticky;top:0;background:var(--card);padding:18px 20px 12px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center;z-index:1}
+.sh-head h2{font-size:22px;line-height:1.15}
+.x{margin-left:auto;border:0;background:#F1ECDF;width:40px;height:40px;border-radius:12px;font-size:22px;line-height:1}
+.sh-body{padding:18px 20px 24px}
+.sec{margin-bottom:20px}
+.sec h3{font-family:"Work Sans",sans-serif;font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.evlist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:6px}
+.evlist li{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;background:#F7F3EA}
+.evlist .d{font-variant-numeric:tabular-nums;font-weight:600;min-width:52px;color:var(--moss)}
+.note{background:var(--sky-bg);color:#2F4C5C;border-radius:12px;padding:12px 14px;font-size:14.5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:13px 18px;font-weight:600;min-height:48px;text-decoration:none}
+.btn.primary{background:var(--moss);color:#fff}
+.btn.primary:hover{background:#33502D}
+.btn.ghost{background:#F1ECDF;color:var(--ink)}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+
+/* stepper */
+.steps{display:flex;gap:6px;margin-bottom:16px}
+.steps i{flex:1;height:5px;border-radius:5px;background:var(--line)}
+.steps i.on{background:var(--moss-2)}
+.q{font-family:Fraunces,serif;font-size:21px;font-weight:600;margin:0 0 4px;line-height:1.25}
+.qhelp{color:var(--muted);font-size:14.5px;margin:0 0 14px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:center;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;min-height:50px}
+.opt .box{flex:none;width:22px;height:22px;border-radius:7px;border:2px solid #BDB49F;display:grid;place-items:center;color:#fff;font-size:14px}
+.opt.radio .box{border-radius:22px}
+.opt[aria-pressed=true]{border-color:var(--moss-2);background:#F3F7EE}
+.opt[aria-pressed=true] .box{background:var(--moss-2);border-color:var(--moss-2)}
+.opt small{display:block;color:var(--muted);font-size:13px}
+textarea,input.t,select.t{width:100%;font:inherit;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;outline:0}
+textarea:focus,input.t:focus,select.t:focus{border-color:var(--moss-2)}
+textarea{min-height:96px;resize:vertical}
+label.l{display:block;font-weight:600;font-size:14.5px;margin:14px 0 6px}
+.nav{display:flex;gap:10px;margin-top:20px}
+.nav .btn{flex:1}
+.summary{background:#F7F3EA;border-radius:12px;padding:12px 14px;font-size:14.5px;white-space:pre-wrap;max-height:220px;overflow:auto}
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);font-size:14px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 22c-.6 0-1-.4-1-1v-6.2C6.3 14.3 3 10.9 3 6.5V5h1.5c3.5 0 6.4 2 7.5 4.9C13.1 7 16 5 19.5 5H21v1.5c0 4.4-3.3 7.8-8 8.3V21c0 .6-.4 1-1 1Z"/></svg>
+      Golden Community Garden &middot; 2026 season
+    </span>
+    <h1>Thank you for growing this garden <em>together.</em></h1>
+    <p class="lede">Find your plot below to see what we've recorded for 2026. Our records are incomplete, and our expectations weren't as clear as they should have been, so this is <b>not a compliance check</b>. It's a chance to set the record straight and make sure your work is recognized.</p>
+    <div class="pills" id="pills"></div>
+    <div class="how">
+      <div><span class="n">1</span><h3>Find your plot</h3><p>Search by plot number or name, then tap your card.</p></div>
+      <div><span class="n">2</span><h3>Check your record</h3><p>Blank means <i>not recorded</i>, not "didn't help." Add anything we missed.</p></div>
+      <div><span class="n">3</span><h3>Tell us about 2027</h3><p>Pick the ways you'd like to pitch in next season. It takes about 3 minutes.</p></div>
+    </div>
+  </div>
+  <svg class="sprig" viewBox="0 0 360 220" aria-hidden="true">
+    <g fill="none" stroke="#3D5A36" stroke-width="2.2" stroke-linecap="round">
+      <path d="M180 220 C180 160 175 120 190 70"/><path d="M120 220 C125 175 110 150 90 120"/><path d="M250 220 C246 180 262 150 290 128"/>
+    </g>
+    <g fill="#567A4C"><path d="M190 70c-30-6-48-30-46-54 28 4 46 26 46 54Z"/><path d="M188 110c26-14 54-8 66 10-24 14-52 10-66-10Z"/>
+    <path d="M90 120c-24 2-44-14-48-36 24-2 44 14 48 36Z"/><path d="M290 128c4-24 24-40 48-38-2 24-24 40-48 38Z"/></g>
+    <g fill="#C98A1B"><circle cx="150" cy="160" r="7"/><circle cx="222" cy="150" r="5"/></g>
+    <g fill="#B85C36"><circle cx="72" cy="168" r="5"/><circle cx="312" cy="176" r="7"/></g>
+  </svg>
+</header>
+
+<div class="bar">
+  <div class="wrap">
+    <label class="search"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#7A836F" d="M10 4a6 6 0 1 0 3.7 10.7l4.8 4.8 1.4-1.4-4.8-4.8A6 6 0 0 0 10 4Zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/></svg>
+      <span class="sr">Find your plot</span><input id="q" type="search" placeholder="Find your plot or name, e.g. 27A or Robin" autocomplete="off"></label>
+    <div class="seg" role="group" aria-label="Garden area" id="areas"></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="legend">
+    <span><span class="leaf" style="display:inline-block;vertical-align:-1px"></span> Workday or volunteer event</span>
+    <span><span class="leaf social" style="display:inline-block;vertical-align:-1px"></span> Social or fundraising event</span>
+    <span>Plots are listed by number. Nothing is ranked.</span>
+  </div>
+  <div class="grid" id="grid" aria-live="polite"></div>
+</main>
+
+<footer><div class="wrap">
+  Records come from the 2026 work-log form and registrations, current as of <span id="asof"></span>. Each event counts once per plot, even when several plot partners attended.
+  Questions? Email the garden at <b>goldencommunitygarden@gmail.com</b>.
+</div></footer>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle"></section>
+
+<script>
+const DATA = {
+ "events": [
+  {
+   "d": "03-21",
+   "name": "Spring workday + potluck",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "04-11",
+   "name": "Orientation + workday + potluck",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "04-16",
+   "name": "Evening work session",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "04-18",
+   "name": "Backup orientation/workday",
+   "cat": "work",
+   "tentative": true
+  },
+  {
+   "d": "04-20",
+   "name": "DUG fundraiser",
+   "cat": "social",
+   "tentative": false
+  },
+  {
+   "d": "05-02",
+   "name": "Workday + potluck",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "05-21",
+   "name": "Evening work session",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "06-03",
+   "name": "Sky Ranchers volunteer help",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "06-06",
+   "name": "Workday + potluck",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "06-10",
+   "name": "Sky Ranchers volunteer help",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "06-13",
+   "name": "MEP volunteer workday",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "06-17",
+   "name": "Sky Ranchers volunteer help",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "06-18",
+   "name": "Happy hour",
+   "cat": "social",
+   "tentative": false
+  },
+  {
+   "d": "06-24",
+   "name": "Sky Ranchers volunteer help",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "06-27",
+   "name": "Grill party",
+   "cat": "social",
+   "tentative": false
+  },
+  {
+   "d": "07-01",
+   "name": "Sky Ranchers volunteer help",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "07-08",
+   "name": "Sky Ranchers volunteer help",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "07-15",
+   "name": "Sky Ranchers volunteer help",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "07-16",
+   "name": "Happy hour",
+   "cat": "social",
+   "tentative": false
+  },
+  {
+   "d": "07-22",
+   "name": "Sky Ranchers volunteer help",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "08-01",
+   "name": "Workday + potluck",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "08-20",
+   "name": "Evening fundraiser prep",
+   "cat": "social",
+   "tentative": false
+  },
+  {
+   "d": "08-22",
+   "name": "Mines volunteer workday",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "08-27",
+   "name": "Bluegrass fundraiser + potluck",
+   "cat": "social",
+   "tentative": false
+  },
+  {
+   "d": "09-05",
+   "name": "Workday + potluck",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "09-19",
+   "name": "Workday + potluck",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "09-24",
+   "name": "Garden potluck happy hour",
+   "cat": "social",
+   "tentative": false
+  },
+  {
+   "d": "10-03",
+   "name": "Workday + potluck",
+   "cat": "work",
+   "tentative": false
+  },
+  {
+   "d": "11-07",
+   "name": "Mines workday + potluck",
+   "cat": "work",
+   "tentative": true
+  }
+ ],
+ "plots": [
+  {
+   "id": "01D",
+   "area": "SE",
+   "gardeners": "Jamie Nonemacher",
+   "firstYear": 2026,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "03A",
+   "area": "NE",
+   "gardeners": "Tina Bonnefin",
+   "firstYear": 2025,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "1AB",
+   "area": "SE",
+   "gardeners": "Holli Shiro",
+   "firstYear": 2022,
+   "compostWeek": "06-14",
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "assigned",
+   "pending": false
+  },
+  {
+   "id": "1CD",
+   "area": "SE",
+   "gardeners": "Helga Youngman, Mel Janeck",
+   "firstYear": 2021,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "2A",
+   "area": "SE",
+   "gardeners": "Madison Tuggle",
+   "firstYear": 2026,
+   "compostWeek": "10-04",
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "assigned",
+   "pending": false
+  },
+  {
+   "id": "2B",
+   "area": "SE",
+   "gardeners": "Peggy & Larry Okuneff, Cathy LaRocca, Betsy Moran",
+   "firstYear": 2026,
+   "compostWeek": "09-13",
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "assigned",
+   "pending": false
+  },
+  {
+   "id": "2C",
+   "area": "SE",
+   "gardeners": "Cheryl Kaumeyer Wethey, John Wethey",
+   "firstYear": 2011,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "2D & 7",
+   "area": "SE",
+   "gardeners": "Matt Connelly, Sam Roach, Tom McDonald",
+   "firstYear": 2024,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "3",
+   "area": "SE",
+   "gardeners": "Victor Espinosa",
+   "firstYear": 2019,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "4",
+   "area": "NE",
+   "gardeners": "Merry & Lynn Haas",
+   "firstYear": 2020,
+   "compostWeek": "04-19",
+   "events": [
+    "04-11",
+    "04-16",
+    "05-02",
+    "05-21"
+   ],
+   "others": [],
+   "compostActivity": [
+    "Compost week: several days on the bins (weeding, cutting, turning, watering, moving material)"
+   ],
+   "compost": "self_reported",
+   "pending": false
+  },
+  {
+   "id": "5 & 9D",
+   "area": "SE",
+   "gardeners": "Nicole Niefeld, Michael Healy",
+   "firstYear": 2024,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "6",
+   "area": "SE",
+   "gardeners": "Becca Hinderliter",
+   "firstYear": 2026,
+   "compostWeek": null,
+   "events": [
+    "05-21",
+    "06-03",
+    "08-20"
+   ],
+   "others": [
+    "Perennial bed P-3 care",
+    "Weeding and transplanting at plot 03B",
+    "Fundraiser planning meeting and work session"
+   ],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "8",
+   "area": "NE",
+   "gardeners": "Alison Bodor",
+   "firstYear": 2026,
+   "compostWeek": "07-12",
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "assigned",
+   "pending": false
+  },
+  {
+   "id": "9A",
+   "area": "SE",
+   "gardeners": "Abigail Henderson, Cali Wierzbanowski, Jamie O'Brien",
+   "firstYear": 2026,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "9B",
+   "area": "SE",
+   "gardeners": "Yuliya Subotskaya, Gus Vrattos",
+   "firstYear": 2025,
+   "compostWeek": null,
+   "events": [
+    "05-02"
+   ],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "9C",
+   "area": "SE",
+   "gardeners": "Eva Gallegos",
+   "firstYear": 2026,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "10AB",
+   "area": "SE",
+   "gardeners": "Tom Roberts",
+   "firstYear": 2018,
+   "compostWeek": null,
+   "events": [
+    "05-02",
+    "06-24",
+    "08-22"
+   ],
+   "others": [
+    "Cutting and hauling trees at the meditation maze",
+    "Hauling gravel to cover fabric along TCG"
+   ],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "11A",
+   "area": "NE",
+   "gardeners": "Serena Lewis",
+   "firstYear": 2023,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "11BD",
+   "area": "NE",
+   "gardeners": "Daniel Perkins",
+   "firstYear": 2022,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "12A",
+   "area": "NE",
+   "gardeners": "Katie Schulz",
+   "firstYear": 2026,
+   "compostWeek": "10-04",
+   "events": [
+    "04-11"
+   ],
+   "others": [
+    "Fundraiser planning",
+    "Fundraiser supply pick-up and clean-up"
+   ],
+   "compostActivity": [],
+   "compost": "assigned",
+   "pending": false
+  },
+  {
+   "id": "12BD",
+   "area": "NE",
+   "gardeners": "Ron D Benioff",
+   "firstYear": 2009,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "12C",
+   "area": "NE",
+   "gardeners": "Luke Kemmerling, Julia Sarrge",
+   "firstYear": 2025,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "13AC",
+   "area": "SE",
+   "gardeners": "Megan Robinson",
+   "firstYear": 2023,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "13BD & 19",
+   "area": "SE",
+   "gardeners": "Kim Walter",
+   "firstYear": 2010,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "14A",
+   "area": "SE",
+   "gardeners": "Sophia Robbins",
+   "firstYear": 2023,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "14B",
+   "area": "SE",
+   "gardeners": "Diana Sankovic",
+   "firstYear": null,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "15A",
+   "area": "NE",
+   "gardeners": "Jess Mabis Kerr",
+   "firstYear": null,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "15B",
+   "area": "NE",
+   "gardeners": "Kate Olivier",
+   "firstYear": 2026,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "16AB",
+   "area": "NE",
+   "gardeners": "Ellen McIlroy",
+   "firstYear": 2023,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "16CD",
+   "area": "NE",
+   "gardeners": "Barbara Walkosz, Anthony Penstonato",
+   "firstYear": 2023,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "17 & 18",
+   "area": "SE",
+   "gardeners": "Mary Slack, Sarah Slack, Kim Crawford",
+   "firstYear": 2024,
+   "compostWeek": null,
+   "events": [
+    "04-11",
+    "05-02",
+    "06-03",
+    "06-06",
+    "06-10",
+    "06-17",
+    "06-24",
+    "07-01",
+    "07-08",
+    "07-15",
+    "07-22"
+   ],
+   "others": [
+    "Refinishing the picnic tables: sanding, assembly, three coats of stain"
+   ],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "20BD",
+   "area": "NE",
+   "gardeners": "Elizabeth Kiptoo",
+   "firstYear": 2025,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "20C",
+   "area": "NE",
+   "gardeners": "Wendy Armstrong, Valerie",
+   "firstYear": 2009,
+   "compostWeek": "03-29",
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "assigned",
+   "pending": false
+  },
+  {
+   "id": "21AB",
+   "area": "NE",
+   "gardeners": "Karen Paris",
+   "firstYear": 2011,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "21C",
+   "area": "NE",
+   "gardeners": "Judy McKeon",
+   "firstYear": 2025,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "21D",
+   "area": "NE",
+   "gardeners": "Patricia Wolters",
+   "firstYear": 2025,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "22A",
+   "area": "SE",
+   "gardeners": "Evelyn (Lindy) Navin",
+   "firstYear": 2025,
+   "compostWeek": null,
+   "events": [
+    "04-16"
+   ],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "22B",
+   "area": "SE",
+   "gardeners": "Alyssa Baker, Jack Moseley",
+   "firstYear": 2026,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "23AB",
+   "area": "NE",
+   "gardeners": "The Eddy (Halle Kiflom & team)",
+   "firstYear": null,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "23C",
+   "area": "NE",
+   "gardeners": "Will Brandenberger",
+   "firstYear": null,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "23D & 24",
+   "area": "NE",
+   "gardeners": "Angelica Elliott",
+   "firstYear": 2019,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "25A",
+   "area": "W",
+   "gardeners": "Teresa Dupuis",
+   "firstYear": 2023,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "26A",
+   "area": "W",
+   "gardeners": "Becky Lafrancois, Jenna Makowski",
+   "firstYear": 2022,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "26B",
+   "area": "W",
+   "gardeners": "Jackie Slocombe, Jennah Kannard",
+   "firstYear": 2026,
+   "compostWeek": null,
+   "events": [
+    "06-06",
+    "08-20"
+   ],
+   "others": [
+    "Fundraiser prep: organizing shed and materials"
+   ],
+   "compostActivity": [
+    "Chopping and moving compost material"
+   ],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "26D",
+   "area": "W",
+   "gardeners": "Christina Rathbone",
+   "firstYear": 2019,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "27A",
+   "area": "W",
+   "gardeners": "Tye Rabens, Laura Kranish",
+   "firstYear": 2024,
+   "compostWeek": null,
+   "events": [
+    "04-11",
+    "08-27",
+    "09-05"
+   ],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "27B",
+   "area": "W",
+   "gardeners": "Adam & Kaylie Sniff",
+   "firstYear": null,
+   "compostWeek": null,
+   "events": [
+    "05-02"
+   ],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "27CD",
+   "area": "W",
+   "gardeners": "Ginger Bennett",
+   "firstYear": 2026,
+   "compostWeek": "07-19",
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "assigned",
+   "pending": false
+  },
+  {
+   "id": "28A",
+   "area": "W",
+   "gardeners": "Maja Sulkowska",
+   "firstYear": 2023,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "28B",
+   "area": "W",
+   "gardeners": "Nina Stiener, Jonathan Beattie",
+   "firstYear": 2024,
+   "compostWeek": "05-31",
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "assigned",
+   "pending": false
+  },
+  {
+   "id": "28CD",
+   "area": "W",
+   "gardeners": "Robin Heim, Adam Duster",
+   "firstYear": 2020,
+   "compostWeek": "04-05",
+   "events": [
+    "03-21",
+    "04-11"
+   ],
+   "others": [],
+   "compostActivity": [
+    "Compost work during signed-up week"
+   ],
+   "compost": "partial",
+   "pending": false
+  },
+  {
+   "id": "29",
+   "area": "W",
+   "gardeners": "Tom Osborne",
+   "firstYear": 2026,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "30A",
+   "area": "W",
+   "gardeners": "Chase Junell",
+   "firstYear": 2026,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "30B",
+   "area": "W",
+   "gardeners": "Brooke Buchan, Ignacio Varela",
+   "firstYear": 2023,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "31A",
+   "area": "W",
+   "gardeners": "Desirae Rider",
+   "firstYear": 2024,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "31B",
+   "area": "W",
+   "gardeners": "Nathalie Brochu",
+   "firstYear": 2026,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "31CD",
+   "area": "W",
+   "gardeners": "Michelle Hurd",
+   "firstYear": 2018,
+   "compostWeek": null,
+   "events": [
+    "08-20"
+   ],
+   "others": [
+    "Fundraiser set-up"
+   ],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": true
+  },
+  {
+   "id": "32AC",
+   "area": "W",
+   "gardeners": "Dana McMaster",
+   "firstYear": 2023,
+   "compostWeek": "05-17",
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "assigned",
+   "pending": false
+  },
+  {
+   "id": "32DB",
+   "area": "W",
+   "gardeners": "Steve & Susan Toon",
+   "firstYear": 2020,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "PPB",
+   "area": "W",
+   "gardeners": "Emily Wood, Philip Wood",
+   "firstYear": 2025,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "PPC",
+   "area": "W",
+   "gardeners": "Devin Druen",
+   "firstYear": 2024,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  },
+  {
+   "id": "PPD",
+   "area": "W",
+   "gardeners": "Dan Kunz",
+   "firstYear": 2011,
+   "compostWeek": null,
+   "events": [],
+   "others": [],
+   "compostActivity": [],
+   "compost": "none_assigned",
+   "pending": false
+  }
+ ],
+ "summary": {
+  "plots": 62,
+  "plotsWithContrib": 12,
+  "plotEvents": 33,
+  "formRows": 53,
+  "compostAssigned": 11
+ },
+ "asOf": "2026-11-05"
+};
+const SPEC = {
+ "title": "Golden Community Garden: 2026 Participation Review",
+ "description": "Thank you for being part of the garden this year! Our 2026 records weren't complete, and our expectations weren't as clear as they should have been. This is not a compliance check. Please confirm your record, add anything we missed, and tell us how you'd like to help in 2027. It takes about 3 minutes.",
+ "plot": {
+  "title": "Your plot",
+  "choices": [
+   "01D",
+   "03A",
+   "1AB",
+   "1CD",
+   "2A",
+   "2B",
+   "2C",
+   "2D & 7",
+   "3",
+   "4",
+   "5 & 9D",
+   "6",
+   "8",
+   "9A",
+   "9B",
+   "9C",
+   "10AB",
+   "11A",
+   "11BD",
+   "12A",
+   "12BD",
+   "12C",
+   "13AC",
+   "13BD & 19",
+   "14A",
+   "14B",
+   "15A",
+   "15B",
+   "16AB",
+   "16CD",
+   "17 & 18",
+   "20BD",
+   "20C",
+   "21AB",
+   "21C",
+   "21D",
+   "22A",
+   "22B",
+   "23AB",
+   "23C",
+   "23D & 24",
+   "25A",
+   "26A",
+   "26B",
+   "26D",
+   "27A",
+   "27B",
+   "27CD",
+   "28A",
+   "28B",
+   "28CD",
+   "29",
+   "30A",
+   "30B",
+   "31A",
+   "31B",
+   "31CD",
+   "32AC",
+   "32DB",
+   "PPB",
+   "PPC",
+   "PPD"
+  ]
+ },
+ "name": {
+  "title": "Your name"
+ },
+ "accuracy": {
+  "title": "Is your 2026 record accurate?",
+  "choices": [
+   "Yes, it looks right",
+   "It needs a correction or addition",
+   "I'm not sure"
+  ]
+ },
+ "events": {
+  "title": "Scheduled 2026 events you attended that are MISSING from your record",
+  "help": "Only check events that aren't already on your record. Anyone from your plot counts.",
+  "choices": [
+   "Mar 21: Spring workday + potluck",
+   "Apr 11: Orientation + workday + potluck",
+   "Apr 16: Evening work session",
+   "Apr 18: Backup orientation/workday",
+   "Apr 20: DUG fundraiser",
+   "May 2: Workday + potluck",
+   "May 21: Evening work session",
+   "Jun 3: Sky Ranchers volunteer help",
+   "Jun 6: Workday + potluck",
+   "Jun 10: Sky Ranchers volunteer help",
+   "Jun 13: MEP volunteer workday",
+   "Jun 17: Sky Ranchers volunteer help",
+   "Jun 18: Happy hour",
+   "Jun 24: Sky Ranchers volunteer help",
+   "Jun 27: Grill party",
+   "Jul 1: Sky Ranchers volunteer help",
+   "Jul 8: Sky Ranchers volunteer help",
+   "Jul 15: Sky Ranchers volunteer help",
+   "Jul 16: Happy hour",
+   "Jul 22: Sky Ranchers volunteer help",
+   "Aug 1: Workday + potluck",
+   "Aug 20: Evening fundraiser prep",
+   "Aug 22: Mines volunteer workday",
+   "Aug 27: Bluegrass fundraiser + potluck",
+   "Sep 5: Workday + potluck",
+   "Sep 19: Workday + potluck",
+   "Sep 24: Garden potluck happy hour",
+   "Oct 3: Workday + potluck"
+  ]
+ },
+ "kinds": {
+  "title": "Other contributions not yet recorded (choose any)",
+  "choices": [
+   "Garden maintenance / weeding common areas",
+   "Helping at a volunteer event",
+   "Organizing a social gathering",
+   "Fundraising",
+   "Administration / communications",
+   "Independent work on my own schedule",
+   "Composting help (outside my assigned week)"
+  ]
+ },
+ "describe": {
+  "title": "Other contributions: one per line (what | date at the garden | hours)",
+  "help": "Example: Weeded north perennial bed | Jul 12 | 2. Leave the date blank for work done away from the garden (e.g. fundraiser planning). Approximate is fine."
+ },
+ "hours": {
+  "title": "Total additional hours",
+  "help": "Sum of the hours above. A rough number is fine."
+ },
+ "compost": {
+  "title": "Your composting week",
+  "choices": [
+   "I completed my compost week",
+   "I signed up but didn't complete it",
+   "I'm not sure",
+   "I didn't sign up for a week"
+  ]
+ },
+ "compostWhen": {
+  "title": "Which week did you compost? (approximate is fine)"
+ },
+ "explain": {
+  "title": "Anything you'd like to explain? (seen only by garden leadership)"
+ },
+ "y2027": {
+  "title": "How would you like to contribute in 2027? (choose any)",
+  "choices": [
+   "Group workdays",
+   "My composting week",
+   "Watering / irrigation help",
+   "Leading a small project",
+   "Social events and potlucks",
+   "Fundraising events",
+   "Admin, communications or social media",
+   "Mentoring new gardeners",
+   "Flexible tasks on my own schedule"
+  ]
+ },
+ "none": {
+  "title": "Nothing to add",
+  "choices": [
+   "I have no additional 2026 contributions to add"
+  ]
+ }
+};
+const FORM = {"viewform":"https://docs.google.com/forms/d/e/1FAIpQLSdwgoICrE36JEZBbpG-Bgh5ikcCZxrNAe2aKulUF37UiMvetA/viewform","entries":{"plot":"entry.1871388639","name":"entry.1880523205","accuracy":"entry.2016272886","events":"entry.854435793","kinds":"entry.152831764","describe":"entry.1690060589","hours":"entry.678327390","compost":"entry.1484288710","compostWhen":"entry.1313536888","explain":"entry.1101949180","y2027":"entry.1124969135","none":"entry.1699988881"}}
+;   // null until the Google Form is created
+const GARDEN_EMAIL = "goldencommunitygarden@gmail.com";
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const MON = ["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const fmt = d => { const [m,dd] = d.split("-"); return MON[+m] + " " + (+dd); };
+const EV = Object.fromEntries(DATA.events.map(e => [e.d, e]));
+const slug = id => "plot-" + id.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/-+$/,"");
+const natKey = id => { const m = id.match(/^(P{1,2})?(\d+)?/); return [m && m[1] ? 1 : 0, m && m[2] ? +m[2] : 999, id]; };
+const plots = [...DATA.plots].sort((a,b) => { const A = natKey(a.id), B = natKey(b.id); return A[0]-B[0] || A[1]-B[1] || A[2].localeCompare(B[2]); });
+
+const COMPOST = {
+  none_assigned: p => ({t:"No compost sign-up on file", c:""}),
+  assigned:      p => ({t:`Compost week of ${fmt(p.compostWeek)}: Confirm`, c:"gold"}),
+  self_reported: p => ({t:`Compost week of ${fmt(p.compostWeek)}: reported, awaiting verification`, c:"sky"}),
+  partial:       p => ({t:`Compost week of ${fmt(p.compostWeek)}: activity reported, awaiting verification`, c:"sky"}),
+  confirmed:     p => ({t:`Compost week of ${fmt(p.compostWeek)}: completed`, c:"green"}),
+};
+const reviewChip = p => p.reviewed ? `<span class="chip green">Reviewed by gardener</span>` : `<span class="chip">Not yet reviewed</span>`;
+
+/* hero pills */
+const s = DATA.summary;
+$("#pills").innerHTML =
+  `<span class="pill"><b>${s.plots}</b> garden plots</span>` +
+  `<span class="pill"><b>${s.plotEvents}</b> event visits recorded so far</span>` +
+  `<span class="pill">Records received from <b>${s.plotsWithContrib}</b> plots. Help us fill in the rest!</span>`;
+$("#asof").textContent = new Date(DATA.asOf + "T12:00").toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+
+/* filters */
+let area = "All", query = "";
+$("#areas").innerHTML = ["All","NE","SE","W"].map(a => `<button aria-pressed="${a==="All"}" data-a="${a}">${a==="All"?"All areas":a}</button>`).join("");
+$("#areas").addEventListener("click", e => { const b = e.target.closest("button"); if(!b) return;
+  area = b.dataset.a; [...$("#areas").children].forEach(x => x.setAttribute("aria-pressed", x===b)); render(); });
+$("#q").addEventListener("input", e => { query = e.target.value.trim().toLowerCase(); render(); });
+
+function card(p){
+  const leaves = p.events.map(d => `<span class="leaf ${EV[d].cat==="social"?"social":""}" title="${esc(fmt(d)+": "+EV[d].name)}"></span>`).join("");
+  const n = p.events.length;
+  const evText = n ? `${n} event${n>1?"s":""} attended` : "";
+  const contrib = p.others.length ? `<div class="chips">${p.others.slice(0,2).map(o=>`<span class="chip green">${esc(o)}</span>`).join("")}${p.others.length>2?`<span class="chip green">+${p.others.length-2} more</span>`:""}</div>` : "";
+  const nothing = !n && !p.others.length && !p.compostActivity.length;
+  const cp = COMPOST[p.compost](p);
+  return `<button class="card" data-id="${esc(p.id)}" aria-label="Plot ${esc(p.id)}, ${esc(p.gardeners)}">
+    <div class="top"><div class="plotno ${p.id.length>4?"long":""}">${esc(p.id)}</div>
+      <div><div class="who">${esc(p.gardeners)}</div><div class="since">${p.firstYear ? (p.firstYear===2026?"New this year, welcome!":"Gardening here since "+p.firstYear) : "&nbsp;"}</div></div></div>
+    ${n ? `<div><div class="leaves">${leaves}</div><div class="soft" style="margin-top:4px">${evText}</div></div>` : ""}
+    ${contrib}
+    ${nothing ? `<div class="soft">Nothing recorded yet. Tap to add what you did.</div>` : ""}
+    <div class="chips">${p.compost!=="none_assigned"?`<span class="chip ${cp.c}">${esc(cp.t)}</span>`:""}${reviewChip(p)}</div>
+    <span class="cta">View &amp; review &rarr;</span>
+  </button>`;
+}
+function render(){
+  const list = plots.filter(p => (area==="All"||p.area===area) &&
+    (!query || p.id.toLowerCase().includes(query) || p.gardeners.toLowerCase().includes(query)));
+  $("#grid").innerHTML = list.length ? list.map(card).join("") : `<div class="empty">No plot matches “${esc(query)}”. Try a plot number like 27A.</div>`;
+}
+$("#grid").addEventListener("click", e => { const c = e.target.closest(".card"); if(c) openPlot(c.dataset.id, true); });
+render();
+
+/* ---------- plot sheet + guided review ---------- */
+let cur = null, st = null, step = 0;
+function openPlot(id, pushHash){
+  cur = plots.find(p => p.id === id); if(!cur) return;
+  st = {accuracy:null, events:new Set(), items:[], compost:null, compostWhen:"", explain:"", y2027:new Set(), name:""};
+  step = 0; drawSheet();
+  $("#scrim").classList.add("on"); $("#sheet").classList.add("on");
+  if(pushHash) history.replaceState(null,"","#"+slug(id));
+  setTimeout(()=>$("#sheet .x")?.focus(), 50);
+}
+function closeSheet(){ $("#scrim").classList.remove("on"); $("#sheet").classList.remove("on"); history.replaceState(null,"",location.pathname+location.search); }
+$("#scrim").addEventListener("click", closeSheet);
+document.addEventListener("keydown", e => { if(e.key==="Escape") closeSheet(); });
+
+function head(){
+  return `<div class="sh-head"><div class="plotno ${cur.id.length>4?"long":""}">${esc(cur.id)}</div>
+    <div><h2 id="shTitle">${esc(cur.gardeners)}</h2><div class="since">${cur.firstYear?"First year in the garden: "+cur.firstYear:"Plot "+esc(cur.id)}</div></div>
+    <button class="x" aria-label="Close" onclick="closeSheet()">&times;</button></div>`;
+}
+function recordView(){
+  const cp = COMPOST[cur.compost](cur);
+  const evs = cur.events.length ? `<ul class="evlist">${cur.events.map(d=>`<li><span class="d">${fmt(d)}</span>${esc(EV[d].name)}</li>`).join("")}</ul>`
+    : `<p class="soft" style="margin:0">No scheduled events recorded yet. That usually means nobody filled in the work log, not that you weren't there.</p>`;
+  const oth = cur.others.length || cur.compostActivity.length
+    ? `<div class="chips">${[...cur.others, ...cur.compostActivity].map(o=>`<span class="chip green">${esc(o)}</span>`).join("")}</div>`
+    : `<p class="soft" style="margin:0">None recorded yet.</p>`;
+  return `<div class="sh-body">
+    <div class="sec"><h3>Scheduled events attended</h3>${evs}</div>
+    <div class="sec"><h3>Other contributions</h3>${oth}</div>
+    <div class="sec"><h3>Composting</h3><span class="chip ${cp.c}">${esc(cp.t)}</span></div>
+    <div class="sec"><h3>Record status</h3><div class="chips">${reviewChip(cur)}${cur.pending?`<span class="chip sky">Some entries awaiting leadership review</span>`:""}</div></div>
+    <div class="note">Everyone is being asked to review their record, even if it's blank. Gardeners pitched in in lots of ways we never wrote down.</div>
+    <div class="nav"><button class="btn primary block" onclick="go(1)">Review my record</button></div>
+    <p class="soft" style="text-align:center;margin:12px 0 0">Tip: bookmark this card. Its link opens straight to plot ${esc(cur.id)}.</p>
+  </div>`;
+}
+const pressed = (on) => `aria-pressed="${on}"`;
+function opt(group, val, label, sub, radio){
+  const on = radio ? st[group]===val : st[group].has(val);
+  return `<button class="opt ${radio?"radio":""}" ${pressed(on)} onclick="pick('${group}',${JSON.stringify(val).replace(/"/g,"&quot;")},${!!radio})"><span class="box">${on?"✓":""}</span><span>${esc(label)}${sub?`<small>${esc(sub)}</small>`:""}</span></button>`;
+}
+function pick(g, v, radio){ if(radio) st[g]=v; else st[g].has(v)?st[g].delete(v):st[g].add(v); drawSheet(); }
+function bind(id, key){ const el = document.getElementById(id); if(el) el.addEventListener("input", e => { st[key] = e.target.value; const nb = document.getElementById("nextBtn"); if(nb && key==="name") nb.disabled = !st.name.trim(); }); }
+
+const STEPS = ["accuracy","add","compost","y2027","send"];
+function stepView(){
+  const k = STEPS[step-1], bar = `<div class="steps">${STEPS.map((_,i)=>`<i class="${i<step?"on":""}"></i>`).join("")}</div>`;
+  let body = "", canNext = true;
+  if(k==="accuracy"){
+    body = `<p class="q">Does your 2026 record look right?</p><p class="qhelp">Think about everyone on plot ${esc(cur.id)}.</p>
+      <div class="opts">${SPEC.accuracy.choices.map(c=>opt("accuracy",c,c,null,true)).join("")}</div>`;
+    canNext = !!st.accuracy;
+  } else if(k==="add"){
+    const missing = SPEC.events.choices.filter((c,i)=> !cur.events.includes(DATA.events.filter(e=>e.d!=="11-07")[i].d));
+    const evIdx = c => SPEC.events.choices.indexOf(c);
+    const tent = c => DATA.events.filter(e=>e.d!=="11-07")[evIdx(c)].tentative;
+    body = `<p class="q">Anything we missed?</p><p class="qhelp">Tap any scheduled events your plot attended that aren't on your record. Skip this step if there's nothing to add.</p>
+      <div class="opts" style="max-height:300px;overflow:auto;padding-right:4px">${missing.map(c=>opt("events",c,c,tent(c)?"Backup date: only if it was held":null)).join("")}</div>
+      <label class="l">Other ways you helped</label>
+      <p class="qhelp" style="margin:-2px 0 10px">Add one line per contribution, with hours. Add the date if it was at the garden.</p>
+      <div id="items">${st.items.map(itemRow).join("")}</div>
+      <button class="btn ghost block" onclick="addItem()">+ Add a contribution</button>
+      ${st.showErr && itemsInvalid() ? `<p class="soft" style="color:#843E20;margin:8px 0 0">Please add hours for each contribution (a rough guess is fine).</p>` : ""}`;
+  } else if(k==="compost"){
+    body = cur.compostWeek
+      ? `<p class="q">You signed up for the week of ${fmt(cur.compostWeek)}</p><p class="qhelp">Composting is tracked separately from other participation. Please confirm: did your plot complete that week?</p>
+         <div class="opts">${SPEC.compost.choices.slice(0,3).map(c=>opt("compost",c,c,null,true)).join("")}</div>`
+      : `<p class="q">Composting</p><p class="qhelp">We don't have a compost sign-up on file for your plot. Did you do a compost week this year?</p>
+         <div class="opts">${SPEC.compost.choices.map(c=>opt("compost",c,c,null,true)).join("")}</div>
+         ${st.compost===SPEC.compost.choices[0]?`<label class="l" for="cw">Which week? <span class="soft">(approximate is fine)</span></label><input class="t" id="cw" placeholder="e.g. week of Aug 9" value="${esc(st.compostWhen)}">`:""}`;
+    body += `<label class="l" for="expl">Anything you'd like to explain? <span class="soft">(only garden leadership will see this)</span></label>
+      <textarea id="expl" placeholder="Optional">${esc(st.explain)}</textarea>`;
+    canNext = !!st.compost;
+  } else if(k==="y2027"){
+    body = `<p class="q">How would you like to help in 2027?</p><p class="qhelp">The garden only works when everyone pitches in, and we're setting up clearer, more flexible ways to contribute. Choose any that suit you.</p>
+      <div class="opts">${SPEC.y2027.choices.map(c=>opt("y2027",c,c)).join("")}</div>`;
+  } else {
+    body = `<p class="q">Last step: your name</p><p class="qhelp">${FORM ? "We'll open a Google Form with your answers already filled in. Just press <b>Submit</b> at the bottom." : "Copy your review and email it to the garden."}</p>
+      <label class="l" for="nm">Your name</label><input class="t" id="nm" autocomplete="name" value="${esc(st.name)}">
+      <label class="l">Your review</label><div class="summary" id="sum">${esc(summaryText())}</div>
+      ${FORM ? "" : `<p class="soft">Send it to <b>${GARDEN_EMAIL}</b> with subject “Plot ${esc(cur.id)} review”.</p>`}`;
+    canNext = !!st.name.trim();
+  }
+  const isLast = k==="send";
+  const nextLabel = isLast ? (FORM ? "Open my prefilled form &rarr;" : "Copy my review") : "Continue";
+  const next = isLast && FORM
+    ? `<a class="btn primary" id="nextBtn" href="#" onclick="return openForm(event)" ${canNext?"":"aria-disabled=true"}>${nextLabel}</a>`
+    : `<button class="btn primary" id="nextBtn" ${canNext?"":"disabled"} onclick="${isLast?"copyReview(this)":"go(step+1)"}">${nextLabel}</button>`;
+  return `<div class="sh-body">${bar}${body}<div class="nav"><button class="btn ghost" onclick="go(step-1)">Back</button>${next}</div></div>`;
+}
+function itemRow(it,i){
+  return `<div style="border:1.5px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff">
+    <select class="t" data-i="${i}" data-f="kind" style="margin-bottom:8px"><option value="">What kind of help?</option>${SPEC.kinds.choices.map(c=>`<option ${it.kind===c?"selected":""}>${esc(c)}</option>`).join("")}</select>
+    <input class="t" data-i="${i}" data-f="what" placeholder="What did you do? e.g. Weeded the north bed" value="${esc(it.what)}" style="margin-bottom:8px">
+    <div style="display:grid;grid-template-columns:1.4fr 1fr auto;gap:8px;align-items:end">
+      <label style="font-size:13px;color:var(--muted)">Date (if at the garden)<input class="t" type="date" min="2026-01-01" max="2026-12-31" data-i="${i}" data-f="date" value="${esc(it.date)}"></label>
+      <label style="font-size:13px;color:var(--muted)">Hours<input class="t" inputmode="decimal" data-i="${i}" data-f="hours" placeholder="e.g. 2" value="${esc(it.hours)}"></label>
+      <button class="x" aria-label="Remove" onclick="rmItem(${i})" style="margin-bottom:4px">&times;</button></div></div>`;
+}
+const hasContent = it => it.kind || it.what.trim();
+const itemsInvalid = () => st.items.some(it => hasContent(it) && !(parseFloat(it.hours) > 0));
+function addItem(){ saveInputs(); st.items.push({kind:"",what:"",date:"",hours:""}); drawSheet(); }
+function rmItem(i){ saveInputs(); st.items.splice(i,1); drawSheet(); }
+const goodItems = () => st.items.filter(hasContent);
+const itemLine = it => [it.what.trim() || it.kind, it.date ? fmt(it.date.slice(5)) : "away from garden", (parseFloat(it.hours)||0) + " h"].join(" | ");
+const totalHours = () => goodItems().reduce((a,it)=>a+(parseFloat(it.hours)||0),0);
+function go(n){ saveInputs();
+  if(STEPS[step-1]==="add" && n>step && itemsInvalid()){ st.showErr = true; drawSheet(); return; } step = Math.max(0, Math.min(STEPS.length, n)); drawSheet(); $("#sheet").scrollTop = 0; }
+function saveInputs(){ const g = id => document.getElementById(id);
+  document.querySelectorAll("[data-i]").forEach(el => { const it = st.items[+el.dataset.i]; if(it) it[el.dataset.f] = el.value; });
+  if(g("cw")) st.compostWhen = g("cw").value;
+  if(g("expl")) st.explain = g("expl").value; if(g("nm")) st.name = g("nm").value; }
+function drawSheet(){ saveInputs(); $("#sheet").innerHTML = head() + (step===0 ? recordView() : stepView());
+  bind("expl","explain"); bind("nm","name"); bind("cw","compostWhen");
+  document.querySelectorAll("[data-i]").forEach(el => el.addEventListener("input", () => saveInputs()));
+  const nm = document.getElementById("nm"); if(nm) nm.addEventListener("input", ()=>{ const su = document.getElementById("sum"); if(su) su.textContent = summaryText(); });
+}
+function summaryText(){
+  const L = [`Plot ${cur.id}: ${st.name || "(your name)"}`, `Record: ${st.accuracy||"-"}`];
+  if(st.events.size) L.push("Missing events: " + [...st.events].join("; "));
+  goodItems().forEach(it => L.push("Other help: " + (it.kind?it.kind+": ":"") + itemLine(it)));
+  if(goodItems().length) L.push("Total extra hours: " + totalHours());
+  L.push("Compost: " + (st.compost||"-") + (st.compostWhen.trim()?" ("+st.compostWhen.trim()+")":""));
+  if(st.explain.trim()) L.push("Note to leadership: " + st.explain.trim());
+  if(st.y2027.size) L.push("2027: " + [...st.y2027].join("; "));
+  if(!st.events.size && !goodItems().length && st.accuracy===SPEC.accuracy.choices[0]) L.push(SPEC.none.choices[0]);
+  return L.join("\n");
+}
+function formUrl(){
+  const E = FORM.entries, q = [];
+  const add = (k,v) => { if(E[k] && v!=null && v!=="") q.push(E[k]+"="+encodeURIComponent(v)); };
+  add("plot",cur.id); add("name",st.name.trim()); add("accuracy",st.accuracy);
+  st.events.forEach(v=>add("events",v)); [...new Set(goodItems().map(it=>it.kind).filter(Boolean))].forEach(v=>add("kinds",v));
+  add("describe", goodItems().map(itemLine).join("\n")); if(goodItems().length) add("hours", String(totalHours())); add("compost",st.compost); add("compostWhen", st.compostWhen.trim());
+  add("explain",st.explain.trim()); st.y2027.forEach(v=>add("y2027",v));
+  if(!st.events.size && !goodItems().length && st.accuracy===SPEC.accuracy.choices[0]) add("none",SPEC.none.choices[0]);
+  return FORM.viewform.replace(/\?.*$/,"") + "?usp=pp_url&" + q.join("&");
+}
+function openForm(e){ saveInputs(); if(!st.name.trim()){ e.preventDefault(); return false; }
+  const a = document.getElementById("nextBtn"); a.href = formUrl(); a.target = "_blank"; a.rel = "noopener"; return true; }
+async function copyReview(btn){ saveInputs();
+  try{ await navigator.clipboard.writeText(summaryText()); btn.textContent = "Copied. Now paste it into an email"; }
+  catch(_){ btn.textContent = "Select the text above to copy"; } }
+
+/* deep link */
+function fromHash(){ const h = location.hash.slice(1); const p = plots.find(x => slug(x.id) === h); if(p) openPlot(p.id, false); }
+window.addEventListener("hashchange", fromHash); fromHash();
+</script>
+</body>
+</html>
