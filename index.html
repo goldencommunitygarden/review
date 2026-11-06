@@ -74,8 +74,9 @@ a{color:var(--moss)}
 .chip.sky{background:var(--sky-bg);color:var(--sky)}
 .soft{color:var(--muted);font-size:14px}
 .card .cta{margin-top:auto;font-size:14px;font-weight:600;color:var(--moss)}
-.card.steward{border:1.5px solid #E2B9A3;background:linear-gradient(#FFFDF8,#FBF1EA);cursor:default}
-.card.steward:hover{transform:none}
+.card.steward{border:1.5px solid #E2B9A3;background:linear-gradient(#FFFDF8,#FBF1EA)}
+div.card.steward{cursor:default}
+div.card.steward:hover{transform:none}
 .plotno.st{background:var(--clay-bg);color:#843E20}
 .empty{grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)}
 
@@ -1326,7 +1327,9 @@ const SPEC = {
    "Fundraising",
    "Administration / communications",
    "Independent work on my own schedule",
-   "Composting help (outside my assigned week)"
+   "Composting help (outside my assigned week)",
+   "Irrigation",
+   "Orchard care"
   ]
  },
  "describe": {
@@ -1380,7 +1383,8 @@ const PARTNERS = [{"name":"Sky Ranchers","dates":["06-03","06-10","06-17","06-24
  {"name":"Colorado School of Mines students","dates":["08-22"],"planned":["11-07"],"people":null,"hours":null},
  {"name":"MEP","dates":["06-13"],"people":null,"hours":null}]
 ;
-const STEWARDS = [{name:"Matt Burde", role:"Non-gardening garden steward", since:2009}];
+const STEWARD_CHOICE = "Steward (no plot)";
+const STEWARDS = [{name:"Matt Burde", role:"Non-gardening garden steward", since:2009, others:[]}];
 const NB = {NE:"North East", SE:"South East", W:"West"};
 function pinsFor(id){ return id.split("&").map(t=>t.trim()).map(t=> t.startsWith("PP") ? "PP" : ((t.match(/^0\d/)||[])[0] || String(+((t.match(/^\d+/)||[""])[0])))).filter(k=>MAP.pins[k]).map(k=>MAP.pins[k]); }
 document.getElementById("mapImg").src = MAP.img;   // null until the Google Form is created
@@ -1437,10 +1441,11 @@ function card(p){
   </button>`;
 }
 function stewardCard(x){
-  return `<div class="card steward" role="group" aria-label="${esc(x.name)}, ${esc(x.role)}">
+  return `<button class="card steward" data-steward="${esc(x.name)}" aria-label="${esc(x.name)}, ${esc(x.role)}">
     <div class="top"><div class="plotno st" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22c-.6 0-1-.4-1-1v-6.2C6.3 14.3 3 10.9 3 6.5V5h1.5c3.5 0 6.4 2 7.5 4.9C13.1 7 16 5 19.5 5H21v1.5c0 4.4-3.3 7.8-8 8.3V21c0 .6-.4 1-1 1Z"/></svg></div>
       <div><div class="nb" style="color:var(--clay)">Whole garden</div><div class="who">${esc(x.name)}</div><div class="since">${esc(x.role)}${x.since?" · since "+x.since:""}</div></div></div>
-    <div class="soft">Doesn't hold a plot. Helps keep the whole garden running.</div></div>`;
+    ${x.others.length?`<div class="chips">${x.others.map(o=>`<span class="chip green">${esc(o)}</span>`).join("")}</div>`:`<div class="soft">Doesn't hold a plot. Helps keep the whole garden running.</div>`}
+    <span class="cta">View &amp; review &rarr;</span></button>`;
 }
 function render(){
   const st = STEWARDS.filter(x => area==="All" && (!query || (x.name+" "+x.role).toLowerCase().includes(query)));
@@ -1448,7 +1453,11 @@ function render(){
     (!query || p.id.toLowerCase().includes(query) || p.gardeners.toLowerCase().includes(query)));
   $("#grid").innerHTML = (list.length || st.length) ? st.map(stewardCard).join("") + list.map(card).join("") : `<div class="empty">No plot matches “${esc(query)}”. Try a plot number like 27A.</div>`;
 }
-$("#grid").addEventListener("click", e => { const c = e.target.closest(".card"); if(c) openPlot(c.dataset.id, true); });
+$("#grid").addEventListener("click", e => { const c = e.target.closest(".card"); if(!c) return; if(c.dataset.steward) openSteward(c.dataset.steward); else openPlot(c.dataset.id, true); });
+function stewardUnit(x){ return {id:STEWARD_CHOICE, steward:true, label:x.name, area:null, gardeners:x.name, firstYear:x.since, events:[], others:x.others||[], compostActivity:[], compost:"none_assigned", compostWeek:null, pending:false}; }
+function openSteward(name){ const x = STEWARDS.find(s=>s.name===name); if(!x) return; cur = stewardUnit(x);
+  st = {accuracy:null, events:new Set(), items:[], compost:null, compostWhen:"", explain:"", y2027:new Set(), name:x.name};
+  step = 0; drawSheet(); $("#scrim").classList.add("on"); $("#sheet").classList.add("on"); }
 render();
 $("#pgrid").innerHTML = PARTNERS.map(g => {
   const n = g.dates.length;
@@ -1473,6 +1482,7 @@ $("#scrim").addEventListener("click", closeSheet);
 document.addEventListener("keydown", e => { if(e.key==="Escape") closeSheet(); });
 
 function head(){
+  if(cur.steward) return `<div class="sh-head"><div class="plotno st" aria-hidden="true">✿</div><div><h2 id="shTitle">${esc(cur.gardeners)}</h2><div class="since">Garden steward · whole garden${cur.firstYear?" · since "+cur.firstYear:""}</div></div><button class="x" aria-label="Close" onclick="closeSheet()">&times;</button></div>`;
   return `<div class="sh-head"><div class="plotno ${cur.id.length>4?"long":""}">${esc(cur.id)}</div>
     <div><h2 id="shTitle">${esc(cur.gardeners)}</h2><div class="since">${NB[cur.area]} neighborhood${cur.firstYear?" · first year "+cur.firstYear:""}</div></div>
     <button class="x" aria-label="Close" onclick="closeSheet()">&times;</button></div>`;
@@ -1487,13 +1497,13 @@ function recordView(){
   return `<div class="sh-body">
     <div class="sec"><h3>Scheduled events attended</h3>${evs}</div>
     <div class="sec"><h3>Other contributions</h3>${oth}</div>
-    <div class="sec"><h3>Composting</h3><span class="chip ${cp.c}">${esc(cp.t)}</span></div>
-    <div class="sec"><h3>Where it is</h3><div class="mapwrap"><img src="${MAP.img}" alt="Map with plot ${esc(cur.id)} marked">${pinsFor(cur.id).map(([x,y])=>`<span class="pin" style="left:${x}%;top:${y}%"></span>`).join("")}</div>
-      ${pinsFor(cur.id).length?"":`<p class="soft" style="margin:6px 0 0">Plot ${esc(cur.id)} isn't labeled on this older map; it's in the ${NB[cur.area]} neighborhood.</p>`}</div>
+    ${cur.steward?"":`<div class="sec"><h3>Composting</h3><span class="chip ${cp.c}">${esc(cp.t)}</span></div>`}
+    ${cur.steward?"":`<div class="sec"><h3>Where it is</h3><div class="mapwrap"><img src="${MAP.img}" alt="Map with plot ${esc(cur.id)} marked">${pinsFor(cur.id).map(([x,y])=>`<span class="pin" style="left:${x}%;top:${y}%"></span>`).join("")}</div>
+      ${pinsFor(cur.id).length?"":`<p class="soft" style="margin:6px 0 0">Plot ${esc(cur.id)} isn't labeled on this older map; it's in the ${NB[cur.area]} neighborhood.</p>`}</div>`}
     <div class="sec"><h3>Record status</h3><div class="chips">${reviewChip(cur)}${cur.pending?`<span class="chip sky">Some entries awaiting leadership review</span>`:""}</div></div>
     <div class="note">Everyone is being asked to review their record, even if it's blank. Gardeners pitched in in lots of ways we never wrote down.</div>
     <div class="nav"><button class="btn primary block" onclick="go(1)">Review my record</button></div>
-    <p class="soft" style="text-align:center;margin:12px 0 0">Tip: bookmark this card. Its link opens straight to plot ${esc(cur.id)}.</p>
+    ${cur.steward?"":`<p class="soft" style="text-align:center;margin:12px 0 0">Tip: bookmark this card. Its link opens straight to plot ${esc(cur.id)}.</p>`}
   </div>`;
 }
 const pressed = (on) => `aria-pressed="${on}"`;
@@ -1504,12 +1514,14 @@ function opt(group, val, label, sub, radio){
 function pick(g, v, radio){ if(radio) st[g]=v; else st[g].has(v)?st[g].delete(v):st[g].add(v); drawSheet(); }
 function bind(id, key){ const el = document.getElementById(id); if(el) el.addEventListener("input", e => { st[key] = e.target.value; const nb = document.getElementById("nextBtn"); if(nb && key==="name") nb.disabled = !st.name.trim(); }); }
 
-const STEPS = ["accuracy","add","compost","y2027","send"];
+const ALL_STEPS = ["accuracy","add","compost","y2027","send"];
+let STEPS = ALL_STEPS;
 function stepView(){
+  STEPS = cur.steward ? ALL_STEPS.filter(k=>k!=="compost") : ALL_STEPS;
   const k = STEPS[step-1], bar = `<div class="steps">${STEPS.map((_,i)=>`<i class="${i<step?"on":""}"></i>`).join("")}</div>`;
   let body = "", canNext = true;
   if(k==="accuracy"){
-    body = `<p class="q">Does your 2026 record look right?</p><p class="qhelp">Think about everyone on plot ${esc(cur.id)}.</p>
+    body = `<p class="q">Does your 2026 record look right?</p><p class="qhelp">${cur.steward?"Think about everything you did for the garden this year.":"Think about everyone on plot "+esc(cur.id)+"."}</p>
       <div class="opts">${SPEC.accuracy.choices.map(c=>opt("accuracy",c,c,null,true)).join("")}</div>`;
     canNext = !!st.accuracy;
   } else if(k==="add"){
@@ -1540,7 +1552,7 @@ function stepView(){
     body = `<p class="q">Last step: your name</p><p class="qhelp">${FORM ? "We'll open a Google Form with your answers already filled in. Just press <b>Submit</b> at the bottom." : "Copy your review and email it to the garden."}</p>
       <label class="l" for="nm">Your name</label><input class="t" id="nm" autocomplete="name" value="${esc(st.name)}">
       <label class="l">Your review</label><div class="summary" id="sum">${esc(summaryText())}</div>
-      ${FORM ? "" : `<p class="soft">Send it to <b>${GARDEN_EMAIL}</b> with subject “Plot ${esc(cur.id)} review”.</p>`}`;
+      ${FORM ? "" : `<p class="soft">Send it to <b>${GARDEN_EMAIL}</b> with subject “${cur.steward?"Steward":"Plot "+esc(cur.id)} review”.</p>`}`;
     canNext = !!st.name.trim();
   }
   const isLast = k==="send";
@@ -1566,7 +1578,7 @@ function rmItem(i){ saveInputs(); st.items.splice(i,1); drawSheet(); }
 const goodItems = () => st.items.filter(hasContent);
 const itemLine = it => [it.what.trim() || it.kind, it.date ? fmt(it.date.slice(5)) : "away from garden", (parseFloat(it.hours)||0) + " h"].join(" | ");
 const totalHours = () => goodItems().reduce((a,it)=>a+(parseFloat(it.hours)||0),0);
-function go(n){ saveInputs();
+function go(n){ saveInputs(); STEPS = cur.steward ? ALL_STEPS.filter(k=>k!=="compost") : ALL_STEPS;
   if(STEPS[step-1]==="add" && n>step && itemsInvalid()){ st.showErr = true; drawSheet(); return; } step = Math.max(0, Math.min(STEPS.length, n)); drawSheet(); $("#sheet").scrollTop = 0; }
 function saveInputs(){ const g = id => document.getElementById(id);
   document.querySelectorAll("[data-i]").forEach(el => { const it = st.items[+el.dataset.i]; if(it) it[el.dataset.f] = el.value; });
@@ -1578,11 +1590,11 @@ function drawSheet(){ saveInputs(); $("#sheet").innerHTML = head() + (step===0 ?
   const nm = document.getElementById("nm"); if(nm) nm.addEventListener("input", ()=>{ const su = document.getElementById("sum"); if(su) su.textContent = summaryText(); });
 }
 function summaryText(){
-  const L = [`Plot ${cur.id}: ${st.name || "(your name)"}`, `Record: ${st.accuracy||"-"}`];
+  const L = [`${cur.steward?"Steward":"Plot "+cur.id}: ${st.name || "(your name)"}`, `Record: ${st.accuracy||"-"}`];
   if(st.events.size) L.push("Missing events: " + [...st.events].join("; "));
   goodItems().forEach(it => L.push("Other help: " + (it.kind?it.kind+": ":"") + itemLine(it)));
   if(goodItems().length) L.push("Total extra hours: " + totalHours());
-  L.push("Compost: " + (st.compost||"-") + (st.compostWhen.trim()?" ("+st.compostWhen.trim()+")":""));
+  if(!cur.steward) L.push("Compost: " + (st.compost||"-") + (st.compostWhen.trim()?" ("+st.compostWhen.trim()+")":""));
   if(st.explain.trim()) L.push("Note to leadership: " + st.explain.trim());
   if(st.y2027.size) L.push("2027: " + [...st.y2027].join("; "));
   if(!st.events.size && !goodItems().length && st.accuracy===SPEC.accuracy.choices[0]) L.push(SPEC.none.choices[0]);
