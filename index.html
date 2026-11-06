@@ -74,6 +74,7 @@ a{color:var(--moss)}
 .chip.sky{background:var(--sky-bg);color:var(--sky)}
 .soft{color:var(--muted);font-size:14px}
 .card .cta{margin-top:auto;font-size:14px;font-weight:600;color:var(--moss)}
+.card .upd{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:2px}
 .card.steward{border:1.5px solid #E2B9A3;background:linear-gradient(#FFFDF8,#FBF1EA)}
 div.card.steward{cursor:default}
 div.card.steward:hover{transform:none}
@@ -1384,7 +1385,10 @@ const PARTNERS = [{"name":"Sky Ranchers","dates":["06-03","06-10","06-17","06-24
  {"name":"MEP","dates":["06-13"],"people":null,"hours":null}]
 ;
 const STEWARD_CHOICE = "Steward (no plot)";
-const STEWARDS = [{name:"Matt Burde", role:"Non-gardening garden steward", since:2009, others:[]}];
+const STEWARDS = [{"name":"Matt Burde","role":"Non-gardening garden steward","since":2009,
+  "events":["03-21","04-11","05-02","05-21","06-06","06-13","06-18","06-27","07-16","08-01","08-22","08-27","09-05","09-19","09-24","10-03"],
+  "others":["Garden emails"],"reviewed":true}]
+;
 const NB = {NE:"North East", SE:"South East", W:"West"};
 function pinsFor(id){ return id.split("&").map(t=>t.trim()).map(t=> t.startsWith("PP") ? "PP" : ((t.match(/^0\d/)||[])[0] || String(+((t.match(/^\d+/)||[""])[0])))).filter(k=>MAP.pins[k]).map(k=>MAP.pins[k]); }
 document.getElementById("mapImg").src = MAP.img;   // null until the Google Form is created
@@ -1437,15 +1441,18 @@ function card(p){
     ${contrib}
     ${nothing ? `<div class="soft">Nothing recorded yet. Tap to add what you did.</div>` : ""}
     <div class="chips">${p.compost!=="none_assigned"?`<span class="chip ${cp.c}">${esc(cp.t)}</span>`:""}${reviewChip(p)}</div>
-    <span class="cta">View &amp; review &rarr;</span>
+    <span class="cta">View &amp; review &rarr;<span class="upd">Updates after leadership review</span></span>
   </button>`;
 }
 function stewardCard(x){
   return `<button class="card steward" data-steward="${esc(x.name)}" aria-label="${esc(x.name)}, ${esc(x.role)}">
     <div class="top"><div class="plotno st" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22c-.6 0-1-.4-1-1v-6.2C6.3 14.3 3 10.9 3 6.5V5h1.5c3.5 0 6.4 2 7.5 4.9C13.1 7 16 5 19.5 5H21v1.5c0 4.4-3.3 7.8-8 8.3V21c0 .6-.4 1-1 1Z"/></svg></div>
       <div><div class="nb" style="color:var(--clay)">Whole garden</div><div class="who">${esc(x.name)}</div><div class="since">${esc(x.role)}${x.since?" · since "+x.since:""}</div></div></div>
-    ${x.others.length?`<div class="chips">${x.others.map(o=>`<span class="chip green">${esc(o)}</span>`).join("")}</div>`:`<div class="soft">Doesn't hold a plot. Helps keep the whole garden running.</div>`}
-    <span class="cta">View &amp; review &rarr;</span></button>`;
+    ${(x.events||[]).length?`<div><div class="leaves">${x.events.map(d=>`<span class="leaf ${EV[d].cat==="social"?"social":""}" title="${esc(fmt(d)+": "+EV[d].name)}"></span>`).join("")}</div><div class="soft" style="margin-top:4px">${x.events.length} events attended</div></div>`:""}
+    ${(x.others||[]).length?`<div class="chips">${x.others.map(o=>`<span class="chip green">${esc(o)}</span>`).join("")}</div>`:""}
+    ${!(x.events||[]).length && !(x.others||[]).length ? `<div class="soft">Doesn't hold a plot. Helps keep the whole garden running.</div>` : ""}
+    <div class="chips">${x.reviewed?`<span class="chip green">Reviewed by steward</span>`:`<span class="chip">Not yet reviewed</span>`}</div>
+    <span class="cta">View &amp; review &rarr;<span class="upd">Updates after leadership review</span></span></button>`;
 }
 function render(){
   const st = STEWARDS.filter(x => area==="All" && (!query || (x.name+" "+x.role).toLowerCase().includes(query)));
@@ -1454,7 +1461,7 @@ function render(){
   $("#grid").innerHTML = (list.length || st.length) ? st.map(stewardCard).join("") + list.map(card).join("") : `<div class="empty">No plot matches “${esc(query)}”. Try a plot number like 27A.</div>`;
 }
 $("#grid").addEventListener("click", e => { const c = e.target.closest(".card"); if(!c) return; if(c.dataset.steward) openSteward(c.dataset.steward); else openPlot(c.dataset.id, true); });
-function stewardUnit(x){ return {id:STEWARD_CHOICE, steward:true, label:x.name, area:null, gardeners:x.name, firstYear:x.since, events:[], others:x.others||[], compostActivity:[], compost:"none_assigned", compostWeek:null, pending:false}; }
+function stewardUnit(x){ return {id:STEWARD_CHOICE, steward:true, reviewed:!!x.reviewed, label:x.name, area:null, gardeners:x.name, firstYear:x.since, events:x.events||[], others:x.others||[], compostActivity:[], compost:"none_assigned", compostWeek:null, pending:false}; }
 function openSteward(name){ const x = STEWARDS.find(s=>s.name===name); if(!x) return; cur = stewardUnit(x);
   st = {accuracy:null, events:new Set(), items:[], compost:null, compostWhen:"", explain:"", y2027:new Set(), name:x.name};
   step = 0; drawSheet(); $("#scrim").classList.add("on"); $("#sheet").classList.add("on"); }
@@ -1549,7 +1556,7 @@ function stepView(){
     body = `<p class="q">How would you like to help in 2027?</p><p class="qhelp">The garden only works when everyone pitches in, and we're setting up clearer, more flexible ways to contribute. Choose any that suit you.</p>
       <div class="opts">${SPEC.y2027.choices.map(c=>opt("y2027",c,c)).join("")}</div>`;
   } else {
-    body = `<p class="q">Last step: your name</p><p class="qhelp">${FORM ? "We'll open a Google Form with your answers already filled in. Just press <b>Submit</b> at the bottom." : "Copy your review and email it to the garden."}</p>
+    body = `<p class="q">Last step: your name</p><p class="qhelp">${FORM ? "We'll open a Google Form with your answers already filled in. Just press <b>Submit</b> at the bottom. Your card updates after leadership review." : "Copy your review and email it to the garden."}</p>
       <label class="l" for="nm">Your name</label><input class="t" id="nm" autocomplete="name" value="${esc(st.name)}">
       <label class="l">Your review</label><div class="summary" id="sum">${esc(summaryText())}</div>
       ${FORM ? "" : `<p class="soft">Send it to <b>${GARDEN_EMAIL}</b> with subject “${cur.steward?"Steward":"Plot "+esc(cur.id)} review”.</p>`}`;
