@@ -143,6 +143,10 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
 .ev{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
 .ev .dt{width:52px;text-align:center;border-radius:10px;background:var(--sage);color:var(--sage-ink);padding:6px 0;line-height:1.1}
 .ev.social .dt{background:var(--gold-bg);color:#7A5310}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.03em;padding:2px 8px;border-radius:999px;vertical-align:1px;margin-right:6px;background:var(--sage);color:var(--sage-ink)}
+.tag.social{background:var(--gold-bg);color:#7A5310}
+.ev.work{border-left:5px solid var(--moss-2)}.ev.social{border-left:5px solid var(--gold)}
+.opt .leaf{flex:none}
 .ev .dt b{display:block;font-family:Fraunces,serif;font-size:22px}.ev .dt span{font-size:12px;text-transform:uppercase;letter-spacing:.05em}
 .ev .ti{font-weight:600;line-height:1.3}.ev .mt{font-size:13.5px;color:var(--muted)}
 .ev .add{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.ev .add a{font-size:13px;padding:5px 10px;border-radius:999px;background:#F1ECDF;color:var(--ink);text-decoration:none}
@@ -216,8 +220,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
 <main class="wrap">
   <div class="note" id="pastNote" style="display:none;margin-top:14px"></div>
   <div class="legend">
-    <span><span class="leaf" style="display:inline-block;vertical-align:-1px"></span> Workday or volunteer event</span>
-    <span><span class="leaf social" style="display:inline-block;vertical-align:-1px"></span> Social or fundraising event</span>
+    <span><span class="leaf" style="display:inline-block;vertical-align:-1px"></span> Workday</span>
+    <span><span class="leaf social" style="display:inline-block;vertical-align:-1px"></span> Social event (potluck, happy hour, fundraiser)</span>
     <span>Plots are listed by number. Nothing is ranked.</span>
   </div>
   <div class="grid" id="grid" aria-live="polite"></div>
@@ -598,9 +602,10 @@ function icsFile(e){ const end = e.end && e.end!=="00:00" ? e.end : e.start;
     "DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z","DTSTART;TZID=America/Denver:"+icsStamp(e,e.start),"DTEND;TZID=America/Denver:"+icsStamp(e,end),
     "SUMMARY:"+e.name.replace(/([,;])/g,"\\$1"),"LOCATION:"+(e.location||"Golden Community Garden").replace(/([,;])/g,"\\$1"),"END:VEVENT","END:VCALENDAR"].join("\r\n");
   return URL.createObjectURL(new Blob([t], {type:"text/calendar"})); }
+function typeTag(e){ return e.cat==="social" ? `<span class="tag social">Social event</span>` : `<span class="tag">Workday</span>`; }
 function evCard(e, withAdd){ const dt = new Date(e.date+"T12:00");
   return `<div class="ev ${e.cat}"><div class="dt"><span>${MON[+e.date.slice(5,7)]}</span><b>${+e.date.slice(8,10)}</b><span>${DOW[dt.getDay()]}</span></div>
-    <div><div class="ti">${esc(e.name)}</div><div class="mt">${timeRange(e)}${e.location?" · "+esc(e.location):""}${e.group?" · with "+esc(e.group):""}${e.cat==="social"?" · social":""}</div>
+    <div><div class="ti">${typeTag(e)}${esc(e.name)}</div><div class="mt">${timeRange(e)}${e.location?" · "+esc(e.location):""}${e.group?" · with "+esc(e.group):""}</div>
     ${withAdd?`<div class="add"><a href="${gcalLink(e)}" target="_blank" rel="noopener">+ Google</a><a href="${icsFile(e)}" download="${esc(e.name.replace(/[^\w ]/g,""))}.ics">+ Apple / Outlook</a></div>`:""}</div></div>`; }
 function paintEvents(){
   const allUp = ALLEV.filter(e=>!e.past), up = allUp.slice(0,3), more = allUp.slice(3), past = ALLEV.filter(e=>e.past && e.season===SEASON).reverse();
@@ -654,7 +659,7 @@ function head(){
 }
 function recordView(){
   const cp = COMPOST[cur.compost](cur);
-  const evs = cur.events.length ? `<ul class="evlist">${cur.events.map(k=>EV[k]?`<li><span class="d">${fmt(EV[k].d)}</span>${esc(EV[k].name)}</li>`:"").join("")}</ul>`
+  const evs = cur.events.length ? `<ul class="evlist">${cur.events.map(k=>EV[k]?`<li><span class="leaf ${EV[k].cat==="social"?"social":""}" aria-hidden="true"></span><span class="d">${fmt(EV[k].d)}</span>${esc(EV[k].name)}</li>`:"").join("")}</ul>`
     : `<p class="soft" style="margin:0">No scheduled events recorded yet. That usually means nobody filled in the work log, not that you weren't there.</p>`;
   const oth = cur.others.length || cur.compostActivity.length
     ? `<div class="chips">${[...cur.others, ...cur.compostActivity].map(o=>`<span class="chip green">${esc(o)}</span>`).join("")}</div>`
@@ -755,9 +760,9 @@ function openSideForm(e, kind){ saveInputs();
   if(!st.name.trim() || empty){ e.preventDefault(); const nb=document.getElementById("nextBtn"); nb.textContent = !st.name.trim() ? "Add your name first" : (kind==="notes"?"Add at least one note":"Write your feedback first"); setTimeout(()=>{ nb.innerHTML="Open my prefilled form &rarr;"; },1800); return false; }
   const a = document.getElementById("nextBtn"); a.href = sideFormUrl(kind); a.target = "_blank"; a.rel = "noopener"; return true; }
 const pressed = (on) => `aria-pressed="${on}"`;
-function opt(group, val, label, sub, radio){
+function opt(group, val, label, sub, radio, cat){
   const on = radio ? st[group]===val : st[group].has(val);
-  return `<button class="opt ${radio?"radio":""}" ${pressed(on)} onclick="pick('${group}',${JSON.stringify(val).replace(/"/g,"&quot;")},${!!radio})"><span class="box">${on?"✓":""}</span><span>${esc(label)}${sub?`<small>${esc(sub)}</small>`:""}</span></button>`;
+  return `<button class="opt ${radio?"radio":""}" ${pressed(on)} onclick="pick('${group}',${JSON.stringify(val).replace(/"/g,"&quot;")},${!!radio})"><span class="box">${on?"✓":""}</span>${cat?`<span class="leaf ${cat==="social"?"social":""}" aria-hidden="true"></span>`:""}<span>${esc(label)}${sub?`<small>${esc(sub)}</small>`:""}</span></button>`;
 }
 function pick(g, v, radio){ if(radio) st[g]=v; else st[g].has(v)?st[g].delete(v):st[g].add(v); drawSheet(); }
 function bind(id, key){ const el = document.getElementById(id); if(el) el.addEventListener("input", e => { st[key] = e.target.value; const nb = document.getElementById("nextBtn"); if(nb && key==="name") nb.disabled = !st.name.trim(); }); }
@@ -774,10 +779,10 @@ function stepView(){
     canNext = !!st.accuracy;
   } else if(k==="add"){
     const missing = DATA.events.filter(e => e.past && !cur.events.includes(e.key));
-    body = `<p class="q">Anything we missed?</p><p class="qhelp">Tap any scheduled events your plot attended that aren't on your record. Skip this step if there's nothing to add.</p>
-      <div class="opts" style="max-height:300px;overflow:auto;padding-right:4px">${missing.map(e=>opt("events",e.key,e.label,e.start&&e.start!=="00:00"?timeRange(e):null)).join("")}</div>
+    body = `<p class="q">Anything we missed?</p><p class="qhelp">Tap any <b style="color:var(--moss-2)">workdays</b> or <b style="color:#7A5310">social events</b> your plot attended that aren't on your record. Skip this step if there's nothing to add.</p>
+      <div class="opts" style="max-height:300px;overflow:auto;padding-right:4px">${missing.map(e=>opt("events",e.key,e.label,[e.cat==="social"?"Social event":"Workday", e.start&&e.start!=="00:00"?timeRange(e):""].filter(Boolean).join(" · "),false,e.cat)).join("")}</div>
       <label class="l">Other ways you helped</label>
-      <p class="qhelp" style="margin:-2px 0 10px">Add one line per contribution, with hours. Add the date if it was at the garden.</p>
+      <p class="qhelp" style="margin:-2px 0 10px">Add one line per contribution, with hours. Add the date if it was at the garden.<br>Helped run an event (set-up, cooking, clean-up, leading volunteers)? Check the event above <i>and</i> add a line here as "Helping at a volunteer event" with your hours.</p>
       <div id="items">${st.items.map(itemRow).join("")}</div>
       <button class="btn ghost block" onclick="addItem()">+ Add a contribution</button>
       ${st.showErr && itemsInvalid() ? `<p class="soft" style="color:#843E20;margin:8px 0 0">Please add hours for each contribution (a rough guess is fine).</p>` : ""}`;
