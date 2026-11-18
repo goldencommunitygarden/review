@@ -80,6 +80,8 @@ a{color:var(--moss)}
 div.card.steward{cursor:default}
 div.card.steward:hover{transform:none}
 .plotno.st{background:var(--clay-bg);color:#843E20}
+/* plot number in its neighborhood's map color (same as the dot next to the name) */
+.plotno.W{background:#2F80C0;color:#fff}.plotno.NE{background:#E88034;color:#1F2A1C}.plotno.SE{background:#7B5EA7;color:#fff}
 .empty{grid-column:1/-1;text-align:center;padding:40px;color:var(--muted)}
 
 /* sheet */
@@ -162,6 +164,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
 .nb{font-size:13px;color:var(--moss-2);font-weight:600}
 .nbdot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:0}
 .nbdot.W{background:#2F80C0}.nbdot.NE{background:#E88034}.nbdot.SE{background:#7B5EA7}
+.cnt{display:grid;grid-template-columns:1fr 84px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:14.5px}
+.cnt input{padding:8px 10px;text-align:center}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 </head>
@@ -282,7 +286,11 @@ const NOTE_FIELDS = [["about","About our plot"],["grew_well","What grew well"],[
 const hasNotes = u => NOTE_FIELDS.some(([k]) => u.notes && u.notes[k]);
 const md = iso => String(iso).slice(5,10);
 // Volunteer requirement and hour value, from Settings B18 and D1:E5 (via Public settings). 0/"" = not set.
-let REQ = {rate:0, workdays:0, hours:0, workdayHours:0, link:""};
+let REQ = {rate:0, workdays:0, hours:0, workdayHours:0, compostHours:0, link:""};
+// People from a plot at one event: saved as "2026-06-14 09:00*3". No "*N" (older saves, backup Form) = 1 person.
+function headcount(evs, key){ const i = evs.indexOf(key); if(i < 0) return 0;
+  const m = evs.slice(i + key.length).match(/^\*(\d{1,2})/); return m ? Math.min(Math.max(+m[1], 1), 20) : 1; }
+const ppl = (u, k) => (u.count && u.count[k]) || 1;
 const num = v => parseFloat(String(v ?? "").replace(/[$,\s]/g,"")) || 0;
 const money = n => "$" + n.toLocaleString("en-US", {minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2});
 // The script moves the Form's years forward each season (2026→2027 and 2027→2028 together); do the same here so
@@ -294,7 +302,7 @@ function specFor(season){
 function build(F, liveEvents){
   const settings = Object.fromEntries(rowsOf(F.settings).map(r=>[r.key, r.value]));
   REQ = {rate:num(settings.hour_value), workdays:num(settings.workdays_required), hours:num(settings.hours_required),
-    workdayHours:num(settings.workday_hours), link:/^https:\/\/[^\s"'<>]+$/.test(settings.pay_link||"") ? settings.pay_link : ""};
+    workdayHours:num(settings.workday_hours), compostHours:num(settings.compost_hours), link:/^https:\/\/[^\s"'<>]+$/.test(settings.pay_link||"") ? settings.pay_link : ""};
   CURRENT = settings.season || CURRENT;
   PSINCE = Object.fromEntries(Object.entries(settings).filter(([k,v])=>k.startsWith("since:") && v).map(([k,v])=>[k.slice(6).trim(), v]));
   const evRows = liveEvents || rowsOf(F.events);
@@ -307,7 +315,7 @@ function build(F, liveEvents){
   rowsOf(F.plots).forEach(r=>{ if(!r.plot) return; const y = r.season || CURRENT;
     const u = {id:r.plot, season:y, area:NBCODE[r.neighborhood]||"", gardeners:r.public_names||r.plot, firstYear:+r.since||null,
       compostWeek:/^\d{4}-/.test(r.compost_week)?md(r.compost_week):null, leaderCompost:r.compost_status, role:r.role,
-      events:[], others:[], compostActivity:[], claim:"", hours:0, reviewed:false, notes:{}, steward:r.type==="Steward"};
+      events:[], count:{}, others:[], compostActivity:[], claim:"", hours:0, reviewed:false, notes:{}, steward:r.type==="Steward"};
     units[y+"|"+r.plot] = u; });
   // Oldest first: historical work log, then backup Form, then web saves (which are already in save order).
   const RANK = {Form:1, Web:2};
@@ -319,9 +327,11 @@ function build(F, liveEvents){
     u.hours += num(e.hours);   // logged "other contribution" hours (per save; Declined/Hold already skipped)
     if(NOTE_FIELDS.some(([k])=>e[k])) u.notes = Object.fromEntries(NOTE_FIELDS.filter(([k])=>e[k]).map(([k])=>[k, e[k]]));
     const evs = e.events||"";
-    ALLEV.forEach(x=>{ if(x.season!==y || u.events.includes(x.key)) return;
-      if(evs.includes(x.key)) u.events.push(x.key);
-      else if(e.source==="Form"){ const m = evs.split(/,\s*(?=[A-Z][a-z]{2} \d)/).find(l=>l.startsWith(fmt(x.d)+":"));
+    ALLEV.forEach(x=>{ if(x.season!==y) return;
+      const n = headcount(evs, x.key);   // several saves can name the same event: keep the highest headcount
+      if(n){ if(!u.events.includes(x.key)) u.events.push(x.key); if(n > ppl(u, x.key)) u.count[x.key] = n; return; }
+      if(u.events.includes(x.key)) return;
+      if(e.source==="Form"){ const m = evs.split(/,\s*(?=[A-Z][a-z]{2} \d)/).find(l=>l.startsWith(fmt(x.d)+":"));
         if(m && (m===x.label || !ALLEV.some(z=>z!==x && z.season===y && z.d===x.d && m===z.label))) { if(!ALLEV.some(z=>z.season===y && z.d===x.d && u.events.includes(z.key))) u.events.push(x.key); } } });
     const desc = (e.describe||"").split(/\n+/).map(l=>l.split(" | ")[0].trim()).filter(Boolean);
     if(desc.length) u.others.push(...desc); else SPEC.kinds.choices.filter(k=>(e.kinds||"").includes(k)).forEach(k=>u.others.push(k));
@@ -375,9 +385,10 @@ const reviewChip = p => p.reviewed ? `<span class="chip green">Reviewed by garde
 function seasonValue(){
   if(!REQ.rate || !REQ.workdayHours) return null;
   const units = [...plots, ...STEWARDS];
-  const visits = units.reduce((a,u)=>a+u.events.filter(k=>EV[k] && EV[k].cat==="work").length, 0);
+  const people = units.reduce((a,u)=>a+u.events.filter(k=>EV[k] && EV[k].cat==="work").reduce((b,k)=>b+ppl(u,k), 0), 0);
+  const compost = plots.filter(u=>u.compost==="confirmed" || u.compost==="self_reported").length;   // completed weeks
   const own = units.reduce((a,u)=>a+u.hours, 0), partner = PARTNERS.reduce((a,g)=>a+g.hours, 0);
-  const hours = visits*REQ.workdayHours + own + partner;
+  const hours = people*REQ.workdayHours + compost*REQ.compostHours + own + partner;
   return {hours: Math.round(hours*100)/100, value: Math.round(hours*REQ.rate*100)/100};
 }
 function paintHero(){
@@ -389,7 +400,9 @@ function paintHero(){
   const sv = seasonValue(), vn = $("#valueNote");
   if(sv && sv.hours){
     $("#pills").insertAdjacentHTML("beforeend", `<span class="pill">About <b>${money(sv.value)}</b> of volunteer time logged so far</span>`);
-    vn.textContent = `That's ${sv.hours.toLocaleString("en-US")} hours at ${money(REQ.rate)} per volunteer hour: each workday visit counts ${REQ.workdayHours} hours per plot, plus the extra hours gardeners logged and our community partners' hours. When several people from one plot came to the same workday it still counts once, so the real total is higher.`;
+    vn.textContent = `That's ${sv.hours.toLocaleString("en-US")} hours at ${money(REQ.rate)} per volunteer hour: ${REQ.workdayHours} hours for each person at a workday` +
+      (REQ.compostHours ? `, ${REQ.compostHours} hours for each completed composting week` : "") +
+      `, plus the extra hours gardeners logged and our community partners' hours. Where a plot hasn't told us how many people came to a workday, we count one, so the real total is likely higher.`;
     vn.style.display = "";
   } else vn.style.display = "none";
   $("#seasonLbl").textContent = SEASON;
@@ -418,7 +431,7 @@ function card(p){
   const nothing = !n && !p.others.length && !p.compostActivity.length;
   const cp = COMPOST[p.compost](p);
   return `<button class="card" data-id="${esc(p.id)}" aria-label="Plot ${esc(p.id)}, ${esc(p.gardeners)}">
-    <div class="top"><div class="plotno ${p.id.length>4?"long":""}">${esc(p.id)}</div>
+    <div class="top"><div class="plotno ${p.area} ${p.id.length>4?"long":""}">${esc(p.id)}</div>
       <div>${p.role?`<span class="chip clay" style="margin-bottom:4px;display:inline-block">${esc(p.role)}</span>`:""}<div class="nb"><span class="nbdot ${p.area}"></span>${NB[p.area]} neighborhood</div><div class="who">${esc(p.gardeners)}</div><div class="since">${p.firstYear ? (String(p.firstYear)===String(SEASON)?"New this year, welcome!":"Gardening here since "+p.firstYear) : "&nbsp;"}</div></div></div>
     ${n ? `<div><div class="leaves">${leaves}</div><div class="soft" style="margin-top:4px">${evText}</div></div>` : ""}
     ${p.notes && p.notes.about ? `<div class="soft" style="font-style:italic;color:#38432F">“${esc(p.notes.about)}”</div>` : ""}
@@ -531,7 +544,7 @@ async function loadLive(){
 
 /* ---------- plot sheet + guided review ---------- */
 let cur = null, st = null, step = 0, mode = "view";
-function freshState(reveal){ return {accuracy:null, events:new Set(), items:[], compost:null, compostWhen:"", explain:"", y2027:new Set(), name:"", reveal,
+function freshState(reveal){ return {accuracy:null, events:new Set(), counts:{}, items:[], compost:null, compostWhen:"", explain:"", y2027:new Set(), name:"", reveal,
   notes:Object.fromEntries(NOTE_FIELDS.map(([k])=>[k,""])), feedback:""}; }
 function openPlot(id, pushHash, reveal){
   cur = plots.find(p => p.id === id); if(!cur) return;
@@ -548,13 +561,13 @@ document.addEventListener("keydown", e => { if(e.key==="Escape") closeSheet(); }
 
 function head(){
   if(cur.steward) return `<div class="sh-head"><div class="plotno st" aria-hidden="true">✿</div><div><h2 id="shTitle">${esc(cur.gardeners)}</h2><div class="since">Garden steward · whole garden${cur.firstYear?" · since "+cur.firstYear:""}</div></div><button class="x" aria-label="Close" onclick="closeSheet()">&times;</button></div>`;
-  return `<div class="sh-head"><div class="plotno ${cur.id.length>4?"long":""}">${esc(cur.id)}</div>
+  return `<div class="sh-head"><div class="plotno ${cur.area} ${cur.id.length>4?"long":""}">${esc(cur.id)}</div>
     <div><h2 id="shTitle">${esc(cur.gardeners)}</h2><div class="since">${cur.role?esc(cur.role)+" · ":""}<span class="nbdot ${cur.area}"></span>${NB[cur.area]} neighborhood${cur.firstYear?" · first year "+cur.firstYear:""}</div></div>
     <button class="x" aria-label="Close" onclick="closeSheet()">&times;</button></div>`;
 }
 function recordView(){
   const cp = COMPOST[cur.compost](cur);
-  const evs = cur.events.length ? `<ul class="evlist">${cur.events.map(k=>EV[k]?`<li><span class="leaf ${EV[k].cat==="social"?"social":""}" aria-hidden="true"></span><span class="d">${fmt(EV[k].d)}</span>${esc(EV[k].name)}</li>`:"").join("")}</ul>`
+  const evs = cur.events.length ? `<ul class="evlist">${cur.events.map(k=>EV[k]?`<li><span class="leaf ${EV[k].cat==="social"?"social":""}" aria-hidden="true"></span><span class="d">${fmt(EV[k].d)}</span>${esc(EV[k].name)}${ppl(cur,k)>1?` <span class="soft">· ${ppl(cur,k)} people</span>`:""}</li>`:"").join("")}</ul>`
     : `<p class="soft" style="margin:0">No scheduled events recorded yet. That usually means nobody filled in the work log, not that you weren't there.</p>`;
   const oth = cur.others.length || cur.compostActivity.length
     ? `<div class="chips">${[...cur.others, ...cur.compostActivity].map(o=>`<span class="chip green">${esc(o)}</span>`).join("")}</div>`
@@ -583,14 +596,20 @@ function payload(kind){
   const base = {kind, season:CURRENT, plot:cur.id, name:st.name.trim()};
   if(kind==="notes") return Object.assign(base, Object.fromEntries(NOTE_FIELDS.map(([k])=>[k, (st.notes[k]||"").trim()])));
   if(kind==="feedback") return Object.assign(base, {feedback:st.feedback.trim()});
-  return Object.assign(base, {accuracy:st.accuracy||"", events:[...st.events], kinds:[...new Set(goodItems().map(it=>it.kind).filter(Boolean))],
+  return Object.assign(base, {accuracy:st.accuracy||"", events:reviewEvents(), kinds:[...new Set(goodItems().map(it=>it.kind).filter(Boolean))],
     items:goodItems().map(it=>({kind:it.kind, what:it.what.trim(), date:it.date, hours:parseFloat(it.hours)||0})),
     describe:goodItems().map(itemLine).join("\n"), hours:goodItems().length?String(totalHours()):"", compost:st.compost||"", compostWhen:(st.compostWhen||"").trim(),
     explain:(st.explain||"").trim(), interests:[...st.y2027]});
 }
+function reviewEvents(){
+  const keys = new Set(st.events);
+  Object.keys(st.counts).forEach(k=>{ if(cur.events.includes(k) && st.counts[k] > ppl(cur,k)) keys.add(k); });
+  return [...keys].map(k=>{ const n = st.counts[k] || 1; return n > 1 ? k + "*" + n : k; });
+}
 function applyLocal(kind, p){
   if(kind==="notes") NOTE_FIELDS.forEach(([k])=>{ if(p[k]) cur.notes[k] = p[k]; else delete cur.notes[k]; });
-  if(kind==="review"){ p.events.forEach(k=>{ if(!cur.events.includes(k)) cur.events.push(k); }); cur.events.sort();
+  if(kind==="review"){ p.events.forEach(v=>{ const [k, n] = v.split("*"); if(!cur.events.includes(k)) cur.events.push(k);
+      if(+n > ppl(cur,k)) cur.count[k] = +n; }); cur.events.sort();
     goodItems().forEach(it=>{ const t = it.what.trim()||it.kind; if(t && !cur.others.includes(t)) cur.others.push(t); });
     if(p.accuracy) cur.reviewed = true; if(/^I completed/.test(p.compost) && cur.compost!=="confirmed") cur.compost = "self_reported"; }
   BY[SEASON].summary.plotEvents = plots.reduce((a,u)=>a+u.events.length,0);
@@ -667,6 +686,7 @@ function stepView(){
     const missing = DATA.events.filter(e => e.past && !cur.events.includes(e.key));
     body = `<p class="q">Anything we missed?</p><p class="qhelp">Tap any <b style="color:var(--moss-2)">workdays</b> or <b style="color:#7A5310">social events</b> your plot attended that aren't on your record. Skip this step if there's nothing to add.</p>
       <div class="opts" style="max-height:300px;overflow:auto;padding-right:4px">${missing.map(e=>opt("events",e.key,e.label,[e.cat==="social"?"Social event":"Workday", e.start&&e.start!=="00:00"?timeRange(e):""].filter(Boolean).join(" · "),false,e.cat)).join("")}</div>
+      ${headcountView()}
       <label class="l">Other ways you helped</label>
       <p class="qhelp" style="margin:-2px 0 10px">Add one line per contribution, with hours. Add the date if it was at the garden.<br>Helped run an event (set-up, cooking, clean-up, leading volunteers)? Check the event above <i>and</i> add a line here as "Helping at a volunteer event" with your hours.</p>
       <div id="items">${st.items.map(itemRow).join("")}</div>
@@ -685,8 +705,8 @@ function stepView(){
   } else if(k==="y2027"){
     const R = REQ, pay = R.rate && R.hours ? money(Math.round(R.hours*R.rate*100)/100) : "";
     const req = !cur.steward && R.workdays && R.hours ? `<div class="note" style="margin:0 0 14px">
-      <b>For ${NEXT()}, each plot is asked to give ${R.workdays} workdays or ${R.hours} hours of individual volunteer time.</b>${R.workdayHours?` A workday counts as ${R.workdayHours} hours.`:""}
-      ${pay ? `<br>Can't make that work? You can pay instead: ${R.hours} hours × ${money(R.rate)} = <b>${pay}</b>. ${R.link ? `<a href="${esc(R.link)}" target="_blank" rel="noopener">Pay online</a>` : "Online payment details are coming soon."}` : ""}</div>` : "";
+      <b>For ${NEXT()}, each plot is asked to give ${R.workdays} workdays or ${R.hours} hours of individual volunteer time${R.compostHours ? `, and to sign up for a composting week and spend at least ${R.compostHours} hours composting that week` : ""}.</b>${R.workdayHours?` Each person at a workday counts ${R.workdayHours} hours.`:""}
+      ${pay ? `<br>Can't make the workdays or hours? You can pay instead: ${R.hours} hours × ${money(R.rate)} = <b>${pay}</b>. ${R.link ? `<a href="${esc(R.link)}" target="_blank" rel="noopener">Pay online</a>` : "Online payment details are coming soon."}` : ""}</div>` : "";
     body = `<p class="q">How would you like to help in ${NEXT()}?</p><p class="qhelp">The garden only works when everyone pitches in, and we're setting up clearer, more flexible ways to contribute. Choose any that suit you.</p>
       ${req}<div class="opts">${SPEC.y2027.choices.map(c=>opt("y2027",c,c)).join("")}</div>`;
   } else {
@@ -705,6 +725,15 @@ function stepView(){
     ? `<a class="btn primary" id="nextBtn" href="#" onclick="return openForm(event)" ${canNext?"":"aria-disabled=true"}>${nextLabel}</a>`
     : `<button class="btn primary" id="nextBtn" ${canNext?"":"disabled"} onclick="${isLast?"copyReview(this)":"go(step+1)"}">${nextLabel}</button>`;
   return `<div class="sh-body">${bar}${body}<div class="nav"><button class="btn ghost" onclick="go(step-1)">Back</button>${next}</div></div>`;
+}
+// "How many from your plot came?" for each workday (each person counts as a workday's hours). Not for stewards.
+function headcountView(){
+  if(cur.steward) return "";
+  const keys = [...new Set([...cur.events, ...st.events])].filter(k=>EV[k] && EV[k].cat==="work" && EV[k].season===SEASON).sort();
+  if(!keys.length) return "";
+  return `<label class="l">How many from your plot came to each workday?</label>
+    <p class="qhelp" style="margin:-2px 0 6px">Each person counts ${REQ.workdayHours||2} hours. Leave 1 if you're not sure.</p>
+    ${keys.map(k=>`<label class="cnt"><span>${esc(EV[k].label)}</span><input class="t" type="number" min="1" max="20" inputmode="numeric" data-c="${esc(k)}" aria-label="People at ${esc(EV[k].label)}" value="${st.counts[k] || ppl(cur,k)}"></label>`).join("")}`;
 }
 function itemRow(it,i){
   return `<div style="border:1.5px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff">
@@ -729,6 +758,7 @@ function saveInputs(){ const g = id => document.getElementById(id);
   if(g("cw")) st.compostWhen = g("cw").value;
   if(g("expl")) st.explain = g("expl").value; if(g("nm")) st.name = g("nm").value;
   if(g("fb")) st.feedback = g("fb").value;
+  document.querySelectorAll("[data-c]").forEach(el => { const n = Math.round(+el.value); st.counts[el.dataset.c] = n >= 1 ? Math.min(n, 20) : 1; });
   document.querySelectorAll("[data-n]").forEach(el => { st.notes[el.dataset.n] = el.value; }); }
 function drawSheet(){ saveInputs(); $("#sheet").innerHTML = head() + (mode==="done" ? doneView() : mode==="notes" ? notesView() : mode==="feedback" ? feedbackView() : step===0 ? recordView() : stepView());
   bind("expl","explain"); bind("nm","name"); bind("cw","compostWhen");
@@ -737,7 +767,10 @@ function drawSheet(){ saveInputs(); $("#sheet").innerHTML = head() + (mode==="do
 }
 function summaryText(){
   const L = [`${cur.steward?"Steward":"Plot "+cur.id}: ${st.name || "(your name)"}`, `Record: ${st.accuracy||"-"}`];
-  if(st.events.size) L.push("Missing events: " + [...st.events].map(k=>EV[k]?EV[k].label:k).join("; "));
+  const who = k => (st.counts[k]||1) > 1 ? ` (${st.counts[k]} people)` : "";
+  if(st.events.size) L.push("Missing events: " + [...st.events].map(k=>(EV[k]?EV[k].label:k) + who(k)).join("; "));
+  const more = Object.keys(st.counts).filter(k=>cur.events.includes(k) && st.counts[k] > ppl(cur,k));
+  if(more.length) L.push("Headcounts: " + more.map(k=>(EV[k]?EV[k].label:k) + who(k)).join("; "));
   goodItems().forEach(it => L.push("Other help: " + (it.kind?it.kind+": ":"") + itemLine(it)));
   if(goodItems().length) L.push("Total extra hours: " + totalHours());
   if(!cur.steward) L.push("Compost: " + (st.compost||"-") + (st.compostWhen.trim()?" ("+st.compostWhen.trim()+")":""));
