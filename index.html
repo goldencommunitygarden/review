@@ -176,6 +176,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
     <h1>Thank you for growing this garden <em>together.</em></h1>
     <p class="lede">Find your plot below to see what we've recorded for <span class="yr">2026</span>. Our records are incomplete, and our expectations weren't as clear as they should have been, so this is <b>not a compliance check</b>. It's a chance to set the record straight and make sure your work is recognized.</p>
     <div class="pills" id="pills"></div>
+    <p class="soft" id="valueNote" style="display:none;margin:10px 0 0;max-width:70ch"></p>
     <div class="how">
       <div><span class="n">1</span><h3>Find your plot</h3><p>Search by plot number or name, then tap your card and choose "Is this your plot?"</p></div>
       <div><span class="n">2</span><h3>Check your record</h3><p>Blank means <i>not recorded</i>, not "didn't help." Add anything we missed.</p></div>
@@ -244,7 +245,7 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--muted);f
 <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle"></section>
 
 <script>
-const SPEC_BASE = {"season": 2026, "title": "Golden Community Garden: 2026 Participation Review", "description": "Thank you for being part of the garden this year! Our 2026 records weren't complete, and our expectations weren't as clear as they should have been. This is not a compliance check. Please confirm your record, add anything we missed, and tell us how you'd like to help in 2027. It takes about 3 minutes.", "plot": {"title": "Your plot", "choices": ["01D", "03A", "1AB", "1CD", "2A", "2B", "2C", "2D & 7", "3", "4", "5 & 9D", "6", "8", "9A", "9B", "9C", "10AB", "11A", "11BD", "12A", "12BD", "12C", "13AC", "13BD & 19", "14A", "14B", "15A", "15B", "16AB", "16CD", "17 & 18", "20BD", "20C", "21AB", "21C", "21D", "22A", "22B", "23AB", "23C", "23D & 24", "25A", "26A", "26B", "26D", "27A", "27B", "27CD", "28A", "28B", "28CD", "29", "30A", "30B", "31A", "31B", "31CD", "32AC", "32DB", "PPB", "PPC", "PPD"]}, "name": {"title": "Your name"}, "accuracy": {"title": "Is your 2026 record accurate?", "choices": ["Yes, it looks right", "It needs a correction or addition", "I'm not sure"]}, "events": {"title": "Scheduled 2026 events you attended that are MISSING from your record", "help": "Only check events that aren't already on your record. Anyone from your plot counts.", "choices": ["Mar 21: Spring workday + potluck", "Apr 11: Orientation + workday + potluck", "Apr 16: Evening work session", "Apr 18: Backup orientation/workday", "Apr 20: DUG fundraiser", "May 2: Workday + potluck", "May 21: Evening work session", "Jun 3: Sky Ranchers volunteer help", "Jun 6: Workday + potluck", "Jun 10: Sky Ranchers volunteer help", "Jun 13: MEP volunteer workday", "Jun 17: Sky Ranchers volunteer help", "Jun 18: Happy hour", "Jun 24: Sky Ranchers volunteer help", "Jun 27: Grill party", "Jul 1: Sky Ranchers volunteer help", "Jul 8: Sky Ranchers volunteer help", "Jul 15: Sky Ranchers volunteer help", "Jul 16: Happy hour", "Jul 22: Sky Ranchers volunteer help", "Aug 1: Workday + potluck", "Aug 20: Evening fundraiser prep", "Aug 22: Mines volunteer workday", "Aug 27: Bluegrass fundraiser + potluck", "Sep 5: Workday + potluck", "Sep 19: Workday + potluck", "Sep 24: Garden potluck happy hour", "Oct 3: Workday + potluck"]}, "kinds": {"title": "Other contributions not yet recorded (choose any)", "choices": ["Garden maintenance / weeding common areas", "Helping at a volunteer event", "Organizing a social gathering", "Fundraising", "Administration / communications", "Independent work on my own schedule", "Composting help (outside my assigned week)", "Irrigation", "Orchard care"]}, "describe": {"title": "Other contributions: one per line (what | date at the garden | hours)", "help": "Example: Weeded north perennial bed | Jul 12 | 2. Leave the date blank for work done away from the garden (e.g. fundraiser planning). Approximate is fine."}, "hours": {"title": "Total additional hours", "help": "Sum of the hours above. A rough number is fine."}, "compost": {"title": "Your composting week", "choices": ["I completed my compost week", "I signed up but didn't complete it", "I'm not sure", "I didn't sign up for a week"]}, "compostWhen": {"title": "Which week did you compost? (approximate is fine)"}, "explain": {"title": "Anything you'd like to explain? (seen only by garden leadership)"}, "y2027": {"title": "How would you like to contribute in 2027? (choose any)", "choices": ["Group workdays", "My composting week", "Watering / irrigation help", "Leading a small project", "Social events and potlucks", "Fundraising events", "Admin, communications or social media", "Mentoring new gardeners", "Flexible tasks on my own schedule"]}, "none": {"title": "Nothing to add", "choices": ["I have no additional 2026 contributions to add"]}};   // backup-Form wording as written for SPEC_BASE.season
+const SPEC_BASE = {"season": 2026, "title": "Golden Community Garden: 2026 Participation Review", "description": "Thank you for being part of the garden this year! Our 2026 records weren't complete, and our expectations weren't as clear as they should have been. This is not a compliance check. Please confirm your record, add anything we missed, and tell us how you'd like to help in 2027. It takes about 3 minutes.", "plot": {"title": "Your plot", "choices": ["01D", "03A", "1AB", "1CD", "2A", "2B", "2C", "2D & 7", "3", "4", "5 & 9D", "6", "8", "9A", "9B", "9C", "10AB", "11A", "11BD", "12A", "12BD", "12C", "13AC", "13BD & 19", "14A", "14B", "15A", "15B", "16AB", "16CD", "17 & 18", "20BD", "20C", "21AB", "21C", "21D", "22A", "22B", "23AB", "23C", "23D & 24", "25A", "26A", "26B", "26D", "27A", "27B", "27CD", "28A", "28B", "28CD", "29", "30A", "30B", "31A", "31B", "31CD", "32AC", "32DB", "PPB", "PPC", "PPD"]}, "name": {"title": "Your name"}, "accuracy": {"title": "Is your 2026 record accurate?", "choices": ["Yes, it looks right", "It needs a correction or addition", "I'm not sure"]}, "events": {"title": "Scheduled 2026 events you attended that are MISSING from your record", "help": "Only check events that aren't already on your record. Anyone from your plot counts.", "choices": ["Mar 21: Spring workday + potluck", "Apr 11: Orientation + workday + potluck", "Apr 16: Evening work session", "Apr 18: Backup orientation/workday", "Apr 20: DUG fundraiser", "May 2: Workday + potluck", "May 21: Evening work session", "Jun 3: Sky Ranchers volunteer help", "Jun 6: Workday + potluck", "Jun 10: Sky Ranchers volunteer help", "Jun 13: MEP volunteer workday", "Jun 17: Sky Ranchers volunteer help", "Jun 18: Happy hour", "Jun 24: Sky Ranchers volunteer help", "Jun 27: Grill party", "Jul 1: Sky Ranchers volunteer help", "Jul 8: Sky Ranchers volunteer help", "Jul 15: Sky Ranchers volunteer help", "Jul 16: Happy hour", "Jul 22: Sky Ranchers volunteer help", "Aug 1: Workday + potluck", "Aug 20: Evening fundraiser prep", "Aug 22: Mines volunteer workday", "Aug 27: Bluegrass fundraiser + potluck", "Sep 5: Workday + potluck", "Sep 19: Workday + potluck", "Sep 24: Garden potluck happy hour", "Oct 3: Workday + potluck"]}, "kinds": {"title": "Other contributions not yet recorded (choose any)", "choices": ["Garden maintenance / weeding common areas", "Helping at a volunteer event", "Organizing a social gathering", "Fundraising", "Administration / communications", "Independent work on my own schedule", "Composting help (outside my assigned week)", "Irrigation", "Orchard care"]}, "describe": {"title": "Other contributions: one per line (what | date at the garden | hours)", "help": "Example: Weeded north perennial bed | Jul 12 | 2. Leave the date blank for work done away from the garden (e.g. fundraiser planning). Approximate is fine."}, "hours": {"title": "Total additional hours", "help": "Sum of the hours above. A rough number is fine."}, "compost": {"title": "Your composting week", "choices": ["I completed my compost week", "I signed up but didn't complete it", "I'm not sure", "I didn't sign up for a week"]}, "compostWhen": {"title": "Which week did you compost? (approximate is fine)"}, "explain": {"title": "Anything you'd like to explain? (seen only by garden leadership)"}, "y2027": {"title": "How would you like to contribute in 2027? (choose any)", "choices": ["Group workdays", "My composting week", "Watering / irrigation help", "Leading a small project", "Social events and potlucks", "Fundraising events", "Admin, communications or social media", "Mentoring new gardeners", "Flexible tasks on my own schedule", "I'd rather pay instead of volunteering"]}, "none": {"title": "Nothing to add", "choices": ["I have no additional 2026 contributions to add"]}};   // backup-Form wording as written for SPEC_BASE.season
 let SPEC = SPEC_BASE;          // same wording with the years moved to the current season (see build())
 const FEEDS_SNAPSHOT = {"plots": "season,plot,type,neighborhood,public_names,since,role,compost_week,compost_status\n2026,01D,Plot,South East,Jamie N.,2026,,,\n2026,03A,Plot,North East,Tina B.,2025,,,\n2026,1AB,Plot,South East,Holli S.,2022,,2026-06-14,\n2026,1CD,Plot,South East,\"Helga Y., Mel J.\",2021,,,\n2026,2A,Plot,South East,Madison T.,2026,,2026-10-04,\n2026,2B,Plot,South East,\"Peggy O., Larry O., Cathy L., Betsy M.\",2026,,2026-09-13,\n2026,2C,Plot,South East,\"Cheryl W., John W.\",2011,,,\n2026,2D & 7,Plot,South East,\"Matt C., Sam R., Tom M.\",2024,,,\n2026,3,Plot,North East,Victor E.,2019,,,\n2026,4,Plot,North East,\"Merry H., Lynn H.\",2020,,2026-04-19,\n2026,5 & 9D,Plot,South East,\"Nicole N., Michael H.\",2024,,,\n2026,6,Plot,South East,Becca H.,2026,,,\n2026,8,Plot,North East,Alison B.,2026,,2026-07-12,\n2026,9A,Plot,South East,\"Abigail H., Cali W., Jamie O.\",2026,,,\n2026,9B,Plot,South East,\"Yuliya S., Gus V.\",2025,,,\n2026,9C,Plot,South East,Eva G.,2026,,,\n2026,10AB,Plot,North East,Tom R.,2018,,,\n2026,11A,Plot,North East,Serena L.,2023,,,\n2026,11BD,Plot,North East,Daniel P.,2022,,,\n2026,12A,Plot,North East,Katie S.,2026,,2026-10-04,\n2026,12BD,Plot,North East,Ron B.,2009,,,\n2026,12C,Plot,North East,\"Luke K., Julia S.\",2025,,,\n2026,13AC,Plot,South East,Megan R.,2023,,,\n2026,13BD & 19,Plot,South East,Kim W.,2010,,,\n2026,14A,Plot,North East,Sophia R.,2023,,,\n2026,14B,Plot,North East,Diana S.,,,,\n2026,15A,Plot,North East,Jess K.,,,,\n2026,15B,Plot,North East,Kate O.,2026,,,\n2026,16AB,Plot,North East,Ellen M.,2023,,,\n2026,16CD,Plot,North East,\"Barbara W., Anthony P.\",2023,,,\n2026,17 & 18,Plot,South East,\"Mary S., Sarah S., Kim C.\",2024,,,\n2026,20BD,Plot,North East,Elizabeth K.,2025,,,\n2026,20C,Plot,North East,\"Wendy A., Valerie\",2009,,2026-03-29,\n2026,21AB,Plot,North East,Karen P.,2011,,,\n2026,21C,Plot,North East,Judy M.,2025,,,\n2026,21D,Plot,North East,Patricia W.,2025,,,\n2026,22A,Plot,South East,Evelyn (Lindy) N.,2025,,,\n2026,22B,Plot,South East,\"Alyssa B., Jack M.\",2026,,,\n2026,23AB,Plot,North East,The Eddy (Halle K. & team),,,,\n2026,23C,Plot,North East,Will B.,,,,\n2026,23D & 24,Plot,North East,Angelica E.,2019,Garden leader,,\n2026,25A,Plot,West,Teresa D.,2023,,,\n2026,26A,Plot,West,\"Becky L., Jenna M.\",2022,,,\n2026,26B,Plot,West,\"Jackie S., Jennah K.\",2026,,,\n2026,26D,Plot,West,Christina R.,2019,,,\n2026,27A,Plot,West,\"Tye R., Laura K.\",2024,,,\n2026,27B,Plot,West,\"Adam S., Kaylie S.\",,,,\n2026,27CD,Plot,West,Ginger B.,2026,,2026-07-19,\n2026,28A,Plot,West,Maja S.,2023,,,\n2026,28B,Plot,West,\"Nina S., Jonathan B.\",2024,,2026-05-31,\n2026,28CD,Plot,West,\"Robin H., Adam D.\",2020,,2026-04-05,\n2026,29,Plot,West,Tom O.,2026,,,\n2026,30A,Plot,West,Chase J.,2026,,,\n2026,30B,Plot,West,\"Brooke B., Ignacio V.\",2023,,,\n2026,31A,Plot,West,Desirae R.,2024,,,\n2026,31B,Plot,West,Nathalie B.,2026,,,\n2026,31CD,Plot,West,Michelle H.,2018,,,\n2026,32AC,Plot,West,Dana M.,2023,,2026-05-17,\n2026,32DB,Plot,West,\"Steve T., Susan T.\",2020,,,\n2026,PPB,Plot,West,\"Emily W., Philip W.\",2025,,,\n2026,PPC,Plot,West,Devin D.,2024,,,\n2026,PPD,Plot,West,Dan K.,2011,,,\n2026,Steward (no plot),Steward,Whole garden,Matt B.,2009,Non-gardening garden steward,,\n", "entries": "source,timestamp,season,plot,status,events,kinds,describe,compost,compost_when,accuracy,grew_well,didnt_grow,favorite,tip,about\nWork log,2026-04-13 20:12,2026,27A,,2026-04-11 10:00,,,,,,,,,,\nWork log,2026-04-16 20:59,2026,22A,,2026-04-16 18:00,,,,,,,,,,\nWork log,2026-05-02 12:06,2026,27B,,2026-05-02 10:00,,,,,,,,,,\nWork log,2026-05-02 15:47,2026,10AB,Accepted,2026-05-02 10:00,,,,,,,,,,\nWork log,2026-05-03 12:02,2026,17 & 18,,2026-04-11 10:00,,,,,,,,,,\nWork log,2026-05-03 12:07,2026,17 & 18,,2026-05-02 10:00,,,,,,,,,,\nWork log,2026-05-07 12:33,2026,9B,,2026-05-02 10:00,,,,,,,,,,\nWork log,2026-05-07 16:39,2026,9B,,2026-05-02 10:00,,,,,,,,,,\nWork log,2026-06-04 08:28,2026,17 & 18,,2026-06-03 13:00,,,,,,,,,,\nWork log,2026-06-04 23:08,2026,6,,2026-06-03 13:00,,,,,,,,,,\nWork log,2026-06-04 23:11,2026,6,,2026-05-21 18:00,,,,,,,,,,\nWork log,2026-06-05 21:51,2026,6,Accepted,,,Perennial bed P-3 care,,,,,,,,\nWork log,2026-06-07 14:04,2026,17 & 18,,2026-06-06 10:00,,,,,,,,,,\nWork log,2026-06-18 14:48,2026,17 & 18,,2026-06-10 13:00,,,,,,,,,,\nWork log,2026-06-18 14:50,2026,17 & 18,,2026-06-17 13:00,,,,,,,,,,\nWork log,2026-06-27 16:40,2026,10AB,Accepted,,,Cutting and hauling trees at the meditation maze,,,,,,,,\nWork log,2026-06-27 16:45,2026,10AB,,2026-06-24 13:00,,,,,,,,,,\nWork log,2026-07-03 15:38,2026,17 & 18,,2026-06-24 13:00,,,,,,,,,,\nWork log,2026-07-03 15:40,2026,17 & 18,Accepted,2026-07-01 13:00,,,,,,,,,,\nWork log,2026-07-05 11:20,2026,12A,,2026-04-11 10:00,,,,,,,,,,\nWork log,2026-08-07 15:30,2026,17 & 18,,2026-07-08 13:00,,,,,,,,,,\nWork log,2026-08-07 15:31,2026,17 & 18,,2026-07-15 13:00,,,,,,,,,,\nWork log,2026-08-07 15:34,2026,17 & 18,,2026-07-22 13:00,,,,,,,,,,\nWork log,2026-08-07 15:49,2026,17 & 18,Accepted,,,\"Refinishing the picnic tables: sanding, assembly, three coats of stain\",,,,,,,,\nWork log,2026-08-12 16:52,2026,26B,,2026-06-06 10:00,,,,,,,,,,\nWork log,2026-08-12 16:57,2026,26B,Accepted,,Composting help (outside my assigned week),Chopping and moving compost material,,,,,,,,\nWork log,2026-08-20 18:13,2026,6,Accepted,,,Weeding and transplanting at plot 03B,,,,,,,,\nWork log,2026-08-20 18:16,2026,6,Accepted,,,Fundraiser planning meeting and work session,,,,,,,,\nWork log,2026-08-21 09:35,2026,6,,2026-08-20 18:00,,,,,,,,,,\nWork log,2026-08-23 20:04,2026,10AB,,2026-08-22 13:00,,,,,,,,,,\nWork log,2026-08-23 20:07,2026,10AB,Accepted,,,Hauling gravel to cover fabric along TCG,,,,,,,,\nWork log,2026-08-29 16:28,2026,27A,,2026-08-27 18:00,,,,,,,,,,\nWork log,2026-09-02 21:17,2026,31CD,,2026-08-20 18:00,,,,,,,,,,\nWork log,2026-09-02 21:21,2026,31CD,Accepted,,,Fundraiser set-up,,,,,,,,\nWork log,2026-09-05 13:57,2026,27A,,2026-09-05 10:00,,,,,,,,,,\nWork log,2026-09-05 19:37,2026,27A,,2026-09-05 10:00,,,,,,,,,,\nWork log,2026-09-14 14:33,2026,12A,Accepted,,,Fundraiser planning,,,,,,,,\nWork log,2026-09-14 14:37,2026,12A,Accepted,,,Fundraiser supply pick-up and clean-up,,,,,,,,\nWork log,2026-10-10 08:15,2026,4,,2026-04-11 10:00,,,,,,,,,,\nWork log,2026-10-10 08:18,2026,4,,2026-04-16 18:00,,,,,,,,,,\nWork log,2026-10-11 10:45,2026,4,Accepted,,,\"Compost week: several days on the bins (weeding, cutting, turning, watering, moving material)\",I completed my compost week,,,,,,,\nWork log,2026-10-10 08:28,2026,4,,2026-05-02 10:00,,,,,,,,,,\nWork log,2026-10-10 08:30,2026,4,,2026-05-21 18:00,,,,,,,,,,\nWork log,2026-10-31 14:37,2026,26B,,2026-08-20 18:00,,,,,,,,,,\nWork log,2026-10-31 14:42,2026,26B,Accepted,,,Fundraiser prep: organizing shed and materials,,,,,,,,\nWork log,2026-11-04 14:19,2026,28CD,,2026-03-21 10:00,,,,,,,,,,\nWork log,2026-11-04 14:20,2026,28CD,Accepted,,,Compost work during signed-up week,Partial activity reported,,,,,,,\nWork log,2026-11-04 14:21,2026,28CD,,2026-04-11 10:00,,,,,,,,,,\nForm,11/5/2026 23:27:02,2026,Steward (no plot),Accepted,\"Mar 21: Spring workday + potluck, Apr 11: Orientation + workday + potluck, May 2: Workday + potluck, May 21: Evening work session, Jun 6: Workday + potluck, Jun 13: MEP volunteer workday, Jun 18: Happy hour, Jun 27: Grill party, Jul 16: Happy hour, Aug 1: Workday + potluck, Aug 22: Mines volunteer workday, Aug 27: Bluegrass fundraiser + potluck, Sep 5: Workday + potluck, Sep 19: Workday + potluck, Sep 24: Garden potluck happy hour, Oct 3: Workday + potluck\",Administration / communications,Garden emails | away from garden | 40 h,,,It needs a correction or addition,,,,,\n", "events": "key,date,start,end,title,type,group,location\n2026-03-21 10:00,2026-03-21,10:00,12:00,1st day of Spring Workday + potluck,work,,\n2026-04-11 10:00,2026-04-11,10:00,12:00,\"Orientation, workday, and potluck (backup Saturday, April 18)\",work,,\n2026-04-16 18:00,2026-04-16,18:00,20:00,Evening work session,work,,\n2026-04-18 10:00,2026-04-18,10:00,12:00,\"Backup orientation, workday, and potluck\",work,,\n2026-04-20 13:00,2026-04-20,13:00,16:00,Support Denver Urban Gardens - Pour Wall Giveback at The Golden Mill,social,,\"The Golden Mill, 1012 Ford St, Golden, CO 80401, USA\"\n2026-05-02 10:00,2026-05-02,10:00,12:00,Workday + potluck,work,,\n2026-05-21 18:00,2026-05-21,18:00,20:00,Evening work session,work,,\n2026-06-03 13:00,2026-06-03,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,\n2026-06-06 10:00,2026-06-06,10:00,12:00,Workday + potluck,work,,\n2026-06-10 13:00,2026-06-10,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,\n2026-06-13 09:00,2026-06-13,09:00,12:00,MEP volunteer help workday,work,Mines MEP Volunteers,\n2026-06-17 13:00,2026-06-17,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,\n2026-06-18 18:00,2026-06-18,18:00,21:00,Happy Hour,social,,\n2026-06-24 13:00,2026-06-24,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,\n2026-07-01 13:00,2026-07-01,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,\n2026-07-08 13:00,2026-07-08,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,\n2026-07-15 13:00,2026-07-15,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,\n2026-07-16 18:00,2026-07-16,18:00,21:00,Happy Hour,social,,\n2026-07-22 13:00,2026-07-22,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,\n2026-08-01 10:00,2026-08-01,10:00,12:00,Workday + potluck,work,,\n2026-08-20 18:00,2026-08-20,18:00,20:00,Work evening preparing garden for fundraiser,work,,\n2026-08-22 13:00,2026-08-22,13:00,16:00,Mines Helluva Welcome Volunteer workday,work,Mines Helluva Volunteers,\n2026-08-27 18:00,2026-08-27,18:00,21:00,Bluegrass fundraiser + potluck,social,,\n2026-09-05 10:00,2026-09-05,10:00,12:00,Workday + potluck,work,,\n2026-09-19 10:00,2026-09-19,10:00,12:00,Workday & potluck,work,,\n2026-09-24 18:00,2026-09-24,18:00,20:00,Potluck Happy Hour,social,,Garden\n2026-10-03 10:00,2026-10-03,10:00,12:00,Workday + potluck,work,,\n2026-11-07 09:00,2026-11-07,09:00,12:00,Mines Workday + potluck (tentative - weather dependant)),work,Mines Helluva Volunteers,\n2027-03-20 10:00,2027-03-20,10:00,12:00,1st day of Spring Workday + potluck,work,,Garden\n2027-04-03 10:00,2027-04-03,10:00,12:00,\"Orientation, workday, and potluck (backup Saturday, April 10)\",work,,Garden\n2027-04-15 18:00,2027-04-15,18:00,20:00,Evening work session,work,,Garden\n2027-05-01 10:00,2027-05-01,10:00,12:00,Workday + potluck,work,,Garden\n2027-05-20 18:00,2027-05-20,18:00,20:00,Evening work session,work,,Garden\n2027-06-05 10:00,2027-06-05,10:00,12:00,Workday + potluck,work,,Garden\n2027-06-09 13:00,2027-06-09,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,Garden\n2027-06-16 13:00,2027-06-16,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,Garden\n2027-06-17 18:00,2027-06-17,18:00,20:00,Potluck Happy Hour,social,,Garden\n2027-06-23 13:00,2027-06-23,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,Garden\n2027-06-30 13:00,2027-06-30,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,Garden\n2027-07-07 13:00,2027-07-07,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,Garden\n2027-07-14 13:00,2027-07-14,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,Garden\n2027-07-15 18:00,2027-07-15,18:00,20:00,Potluck Happy Hour,social,,Garden\n2027-07-21 13:00,2027-07-21,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,Garden\n2027-07-28 13:00,2027-07-28,13:00,15:00,Sky Ranchers volunteer help,work,Sky Ranchers,Garden\n2027-08-07 10:00,2027-08-07,10:00,12:00,Workday + potluck,work,,Garden\n2027-09-04 10:00,2027-09-04,10:00,12:00,Workday + potluck,work,,Garden\n2027-09-18 10:00,2027-09-18,10:00,12:00,\"Workday & potluck (City of Golden cleanup day, confirm date)\",work,,Garden\n2027-09-23 18:00,2027-09-23,18:00,20:00,Potluck Happy Hour,social,,Garden\n2027-10-02 10:00,2027-10-02,10:00,12:00,Workday + potluck,work,,Garden\n", "partners": "date,group,session,people,total_hours,didnt_happen\n2026-06-03,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2026-06-10,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2026-06-13,Mines MEP Volunteers,MEP volunteer help workday,,,FALSE\n2026-06-17,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2026-06-24,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2026-07-01,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2026-07-08,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2026-07-15,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2026-07-22,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2026-08-22,Mines Helluva Volunteers,Mines Helluva Welcome Volunteer workday,,,FALSE\n2026-11-07,Mines Helluva Volunteers,Mines Workday + potluck (tentative - weather dependant)),,,FALSE\n2027-06-09,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2027-06-16,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2027-06-23,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2027-06-30,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2027-07-07,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2027-07-14,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2027-07-21,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n2027-07-28,Sky Ranchers,Sky Ranchers volunteer help,,,FALSE\n", "settings": "key,value\nseason,2026\ngarden_email,goldencommunitygarden@gmail.com\nsince:Sky Ranchers,2018\nsince:Mines Helluva Volunteers,2017\nsince:Mines MEP Volunteers,2025\n"};
 const PUBLIC_ID = "1NDso-NTcb4NA96BQxKYRQWHKwRt5IUQhZ_NOF6_R5BE";   // the public Google Sheet; null = saved copy only
@@ -280,6 +281,10 @@ const NBCODE = {"West":"W","North East":"NE","South East":"SE"};
 const NOTE_FIELDS = [["about","About our plot"],["grew_well","What grew well"],["didnt_grow","What didn't do so well"],["favorite","Favorite variety"],["tip","Tip for other gardeners"]];
 const hasNotes = u => NOTE_FIELDS.some(([k]) => u.notes && u.notes[k]);
 const md = iso => String(iso).slice(5,10);
+// Volunteer requirement and hour value, from Settings B18 and D1:E5 (via Public settings). 0/"" = not set.
+let REQ = {rate:0, workdays:0, hours:0, workdayHours:0, link:""};
+const num = v => parseFloat(String(v ?? "").replace(/[$,\s]/g,"")) || 0;
+const money = n => "$" + n.toLocaleString("en-US", {minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2});
 // The script moves the Form's years forward each season (2026→2027 and 2027→2028 together); do the same here so
 // prefilled answers like "I have no additional 2027 contributions to add" match the Form exactly.
 const rollYears = (s, from, to) => String(s).replace(new RegExp("\\b(" + from + "|" + (from + 1) + ")\\b", "g"), m => String(+m - from + to));
@@ -288,6 +293,8 @@ function specFor(season){
   return base && +season && +season !== base ? JSON.parse(rollYears(JSON.stringify(SPEC_BASE), base, +season)) : SPEC_BASE; }
 function build(F, liveEvents){
   const settings = Object.fromEntries(rowsOf(F.settings).map(r=>[r.key, r.value]));
+  REQ = {rate:num(settings.hour_value), workdays:num(settings.workdays_required), hours:num(settings.hours_required),
+    workdayHours:num(settings.workday_hours), link:/^https:\/\/[^\s"'<>]+$/.test(settings.pay_link||"") ? settings.pay_link : ""};
   CURRENT = settings.season || CURRENT;
   PSINCE = Object.fromEntries(Object.entries(settings).filter(([k,v])=>k.startsWith("since:") && v).map(([k,v])=>[k.slice(6).trim(), v]));
   const evRows = liveEvents || rowsOf(F.events);
@@ -300,7 +307,7 @@ function build(F, liveEvents){
   rowsOf(F.plots).forEach(r=>{ if(!r.plot) return; const y = r.season || CURRENT;
     const u = {id:r.plot, season:y, area:NBCODE[r.neighborhood]||"", gardeners:r.public_names||r.plot, firstYear:+r.since||null,
       compostWeek:/^\d{4}-/.test(r.compost_week)?md(r.compost_week):null, leaderCompost:r.compost_status, role:r.role,
-      events:[], others:[], compostActivity:[], claim:"", reviewed:false, notes:{}, steward:r.type==="Steward"};
+      events:[], others:[], compostActivity:[], claim:"", hours:0, reviewed:false, notes:{}, steward:r.type==="Steward"};
     units[y+"|"+r.plot] = u; });
   // Oldest first: historical work log, then backup Form, then web saves (which are already in save order).
   const RANK = {Form:1, Web:2};
@@ -309,6 +316,7 @@ function build(F, liveEvents){
     if(e.status==="Declined"||e.status==="Hold") return;
     if((e.source==="Form"||e.source==="Web") && e.accuracy) u.reviewed = true;
     // A notes save sends every note field, so the newest one replaces the old set (a cleared field stays cleared).
+    u.hours += num(e.hours);   // logged "other contribution" hours (per save; Declined/Hold already skipped)
     if(NOTE_FIELDS.some(([k])=>e[k])) u.notes = Object.fromEntries(NOTE_FIELDS.filter(([k])=>e[k]).map(([k])=>[k, e[k]]));
     const evs = e.events||"";
     ALLEV.forEach(x=>{ if(x.season!==y || u.events.includes(x.key)) return;
@@ -362,12 +370,28 @@ const COMPOST = {
 };
 const reviewChip = p => p.reviewed ? `<span class="chip green">Reviewed by gardener</span>` : `<span class="chip">Not yet reviewed</span>`;
 
+// Total value of the season's logged volunteer time: workday visits (once per plot) × hours per workday,
+// plus logged contribution hours, plus community-partner hours; all × the hour value. Null if not set up.
+function seasonValue(){
+  if(!REQ.rate || !REQ.workdayHours) return null;
+  const units = [...plots, ...STEWARDS];
+  const visits = units.reduce((a,u)=>a+u.events.filter(k=>EV[k] && EV[k].cat==="work").length, 0);
+  const own = units.reduce((a,u)=>a+u.hours, 0), partner = PARTNERS.reduce((a,g)=>a+g.hours, 0);
+  const hours = visits*REQ.workdayHours + own + partner;
+  return {hours: Math.round(hours*100)/100, value: Math.round(hours*REQ.rate*100)/100};
+}
 function paintHero(){
   const s = DATA.summary;
   $("#pills").innerHTML =
     `<span class="pill"><b>${s.plots}</b> garden plots</span>` +
     `<span class="pill"><b>${s.plotEvents}</b> event visits recorded so far</span>` +
     `<span class="pill">Records from <b>${s.plotsWithContrib}</b> plots so far. Help us fill in the rest!</span>`;
+  const sv = seasonValue(), vn = $("#valueNote");
+  if(sv && sv.hours){
+    $("#pills").insertAdjacentHTML("beforeend", `<span class="pill">About <b>${money(sv.value)}</b> of volunteer time logged so far</span>`);
+    vn.textContent = `That's ${sv.hours.toLocaleString("en-US")} hours at ${money(REQ.rate)} per volunteer hour: each workday visit counts ${REQ.workdayHours} hours per plot, plus the extra hours gardeners logged and our community partners' hours. When several people from one plot came to the same workday it still counts once, so the real total is higher.`;
+    vn.style.display = "";
+  } else vn.style.display = "none";
   $("#seasonLbl").textContent = SEASON;
   document.querySelectorAll(".yr").forEach(x=>x.textContent = SEASON);
   document.querySelectorAll(".ny").forEach(x=>x.textContent = NEXT());
@@ -375,7 +399,8 @@ function paintHero(){
   $("#seasons").style.display = SEASONS.length > 1 ? "" : "none";
   $("#pastNote").style.display = canEdit() ? "none" : "";
   $("#pastNote").textContent = `You're looking at ${SEASON}, a past season. It's read-only. Switch to ${CURRENT} to review or update your plot.`;
-  $("#asof").textContent = LIVE ? "live from the garden's records" : (PUBLIC_ID ? "a saved copy (live records couldn't be reached)" : "November 10, 2026");
+  $("#asof").textContent = LIVE ? "live from the garden's records"
+    : PUBLIC_ID ? `a saved copy from ${SAVED_AT || "November 10, 2026"} (live records couldn't be reached; trying again)` : "November 10, 2026";
 }
 
 /* filters */
@@ -429,7 +454,7 @@ $("#pgrid").innerHTML = PARTNERS.map(g => {
   return `<div class="card steward" style="background:linear-gradient(#FFFDF8,#EEF3E8);border-color:#C9D8BC">
     <div class="top"><div class="plotno" aria-hidden="true">${n}</div><div><div class="nb">Partner group</div><div class="who">${esc(g.name)}</div><div class="since">${PSINCE[g.name] ? `Volunteering here since ${esc(PSINCE[g.name])} · ` : ""}${n} session${n===1?"":"s"} in ${esc(SEASON)}</div></div></div>
     <div class="chips">${g.dates.map(d=>`<span class="chip green">${fmt(d)}</span>`).join("")}${(g.planned||[]).map(d=>`<span class="chip">${fmt(d)} (planned)</span>`).join("")}</div>
-    <div class="soft">${g.people ? `<b>${g.people}</b> volunteer visits${g.hours?` · <b>${g.hours}</b> hours`:""}` : "Volunteer hours being tallied."}</div></div>`;
+    <div class="soft">${[g.people ? `<b>${g.people}</b> volunteer visits` : "", g.hours ? `<b>${Math.round(g.hours*100)/100}</b> hours` : ""].filter(Boolean).join(" · ") || "Volunteer hours being tallied."}</div></div>`;
 }).join("");
 $("#partners").style.display = PARTNERS.length ? "" : "none";
 }
@@ -458,24 +483,50 @@ function paintEvents(){
   $("#subApple").href = "webcal://"+CAL.ics;
 }
 function paint(){ paintHero(); render(); paintPartners(); paintEvents(); }
+// Live data: the public sheet (5 tabs) plus fresh events from the web app.
+// The public sheet is fed by IMPORTRANGE, which can briefly return "Loading…" or a half-filled tab right after the
+// private sheet is edited. So: check every tab, retry a few times, keep the last good live copy in this browser,
+// and keep retrying quietly in the background instead of falling back to the copy built into the page for good.
+const LAST_KEY = "gcg-last-live", RETRY_MS = [0, 2500, 7000], BG_RETRY_MS = 60000, BG_TRIES = 10;
+let SAVED_AT = "", pendingLive = null, bgTries = 0, LIVE_EVENTS = null;
+const TABS = ["plots","entries","events","partners","settings"];
+const HEADS = {plots:"season", entries:"source", events:"key", partners:"date", settings:"key"};
+const feedsOK = F => !!F && TABS.every(n => new RegExp('^\\uFEFF?"?' + HEADS[n] + '"?,').test(F[n]||"")) && rowsOf(F.plots).length >= 5;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function fetchFeeds(){
+  const getCSV = n => fetch(`https://docs.google.com/spreadsheets/d/${PUBLIC_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${n}`, {cache:"no-store"})
+    .then(r => { if(!r.ok) throw new Error(r.status); return r.text(); });
+  for(const wait of RETRY_MS){
+    if(wait) await sleep(wait);
+    try{ const txt = await Promise.all(TABS.map(getCSV)); const F = Object.fromEntries(TABS.map((n,i)=>[n, txt[i]]));
+      if(feedsOK(F)) return F; console.warn("Public copy incomplete; retrying"); }
+    catch(err){ console.warn("Public copy unavailable:", err); }
+  }
+  return null;
+}
+const savedLabel = s => new Date(s.at).toLocaleString("en-US", {month:"long", day:"numeric", hour:"numeric", minute:"2-digit"});
+function savedCopy(){ try{ const s = JSON.parse(localStorage.getItem(LAST_KEY) || "null"); return s && feedsOK(s.F) ? s : null; } catch(_){ return null; } }
+function remember(F){ try{ localStorage.setItem(LAST_KEY, JSON.stringify({at:new Date().toISOString(), F})); } catch(_){} }
+const busy = () => $("#sheet").classList.contains("on") && (mode !== "view" || step > 0);
+function applyLive(F, live, isLive, savedAt){
+  if(busy()){ pendingLive = [F, live, isLive, savedAt]; return; }   // never redraw under someone mid-review
+  build(F, live); LIVE = isLive; SAVED_AT = savedAt || ""; paint();
+  if($("#sheet").classList.contains("on") && cur){ const n = [...plots, ...STEWARDS].find(x=>x.id===cur.id); if(n){ cur = n; drawSheet(); } }
+  else fromHash();
+}
 async function loadLive(){
   if(!PUBLIC_ID && !WEBAPP) return;
-  let F = null, live = null;
-  const getCSV = n => fetch(`https://docs.google.com/spreadsheets/d/${PUBLIC_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${n}`, {cache:"no-store"}).then(r => { if(!r.ok) throw new Error(r.status); return r.text(); });
-  try{
-    if(PUBLIC_ID){
-      const names = ["plots","entries","events","partners","settings"], txt = await Promise.all(names.map(getCSV));
-      F = Object.fromEntries(names.map((n,i)=>[n, txt[i]]));
-      if(!/^"?season"?,/.test(F.plots) || rowsOf(F.plots).length < 5) F = null;
-    }
-  }catch(err){ F = null; console.warn("Public copy unavailable:", err); }
-  try{ if(WEBAPP){ const r = await fetch(WEBAPP+"?action=events", {cache:"no-store"}); const j = await r.json(); if(j.ok && j.events && j.events.length) live = j.events; } }
-  catch(err){ console.warn("Web app events unavailable:", err); }
-  if(!F && !live) { LIVE = false; paintHero(); return; }
-  build(F || FEEDS_SNAPSHOT, live); LIVE = !!F;
-  paint();
-  if($("#sheet").classList.contains("on")){ if(step===0 && mode==="view" && cur){ const n = [...plots, ...STEWARDS].find(x=>x.id===cur.id); if(n){ cur = n; drawSheet(); } } }
-  else fromHash();
+  if(WEBAPP && !LIVE_EVENTS){
+    try{ const r = await fetch(WEBAPP+"?action=events", {cache:"no-store"}); const j = await r.json(); if(j.ok && j.events && j.events.length) LIVE_EVENTS = j.events; }
+    catch(err){ console.warn("Web app events unavailable:", err); }
+  }
+  const F = PUBLIC_ID ? await fetchFeeds() : null;
+  if(F){ remember(F); bgTries = BG_TRIES; return applyLive(F, LIVE_EVENTS, true); }
+  const s = savedCopy();
+  if(s) applyLive(s.F, LIVE_EVENTS, false, savedLabel(s));
+  else if(LIVE_EVENTS) applyLive(FEEDS_SNAPSHOT, LIVE_EVENTS, false);
+  else paintHero();
+  if(PUBLIC_ID && ++bgTries < BG_TRIES) setTimeout(loadLive, BG_RETRY_MS);   // keep trying quietly
 }
 
 /* ---------- plot sheet + guided review ---------- */
@@ -489,7 +540,9 @@ function openPlot(id, pushHash, reveal){
   if(pushHash) history.replaceState(null,"","#"+slug(id));
   setTimeout(()=>$("#sheet .x")?.focus(), 50);
 }
-function closeSheet(){ $("#scrim").classList.remove("on"); $("#sheet").classList.remove("on"); history.replaceState(null,"",location.pathname+location.search); if(pendingPaint){ pendingPaint=false; paint(); } }
+function closeSheet(){ $("#scrim").classList.remove("on"); $("#sheet").classList.remove("on"); history.replaceState(null,"",location.pathname+location.search);
+  if(pendingLive){ const x = pendingLive; pendingLive = null; pendingPaint = false; applyLive(...x); }
+  else if(pendingPaint){ pendingPaint=false; paint(); } }
 $("#scrim").addEventListener("click", closeSheet);
 document.addEventListener("keydown", e => { if(e.key==="Escape") closeSheet(); });
 
@@ -630,8 +683,12 @@ function stepView(){
       <textarea id="expl" placeholder="Optional">${esc(st.explain)}</textarea>`;
     canNext = !!st.compost;
   } else if(k==="y2027"){
+    const R = REQ, pay = R.rate && R.hours ? money(Math.round(R.hours*R.rate*100)/100) : "";
+    const req = !cur.steward && R.workdays && R.hours ? `<div class="note" style="margin:0 0 14px">
+      <b>For ${NEXT()}, each plot is asked to give ${R.workdays} workdays or ${R.hours} hours of individual volunteer time.</b>${R.workdayHours?` A workday counts as ${R.workdayHours} hours.`:""}
+      ${pay ? `<br>Can't make that work? You can pay instead: ${R.hours} hours × ${money(R.rate)} = <b>${pay}</b>. ${R.link ? `<a href="${esc(R.link)}" target="_blank" rel="noopener">Pay online</a>` : "Online payment details are coming soon."}` : ""}</div>` : "";
     body = `<p class="q">How would you like to help in ${NEXT()}?</p><p class="qhelp">The garden only works when everyone pitches in, and we're setting up clearer, more flexible ways to contribute. Choose any that suit you.</p>
-      <div class="opts">${SPEC.y2027.choices.map(c=>opt("y2027",c,c)).join("")}</div>`;
+      ${req}<div class="opts">${SPEC.y2027.choices.map(c=>opt("y2027",c,c)).join("")}</div>`;
   } else {
     body = `<p class="q">Last step: your name</p><p class="qhelp">${WEBAPP ? "Press <b>Save</b> and you're done. Your card updates within a few minutes." : FORM ? "We'll open a Google Form with your answers already filled in. Just press <b>Submit</b> at the bottom." : "Copy your review and email it to the garden."}</p>
       <label class="l" for="nm">Your name</label><input class="t" id="nm" autocomplete="name" value="${esc(st.name)}">
@@ -709,7 +766,9 @@ async function copyReview(btn){ saveInputs();
 /* deep link */
 function fromHash(){ const h = location.hash.slice(1); const p = plots.find(x => slug(x.id) === h); if(p) openPlot(p.id, false, true); }
 window.addEventListener("hashchange", fromHash);
-build(FEEDS_SNAPSHOT); paint(); fromHash(); loadLive();
+{ const s = PUBLIC_ID ? savedCopy() : null;   // this browser's last live copy is fresher than the one built into the page
+  build(s ? s.F : FEEDS_SNAPSHOT); if(s) SAVED_AT = savedLabel(s); }
+paint(); fromHash(); loadLive();
 </script>
 </body>
 </html>
